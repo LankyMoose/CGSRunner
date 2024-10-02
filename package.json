@@ -22,6 +22,7 @@
     "vite-plugin-kaioken": "0.13.1"
   },
   "dependencies": {
+    "@tauri-apps/plugin-fs": "~2",
     "@tauri-apps/plugin-shell": "~2",
     "kaioken": "0.32.1"
   }

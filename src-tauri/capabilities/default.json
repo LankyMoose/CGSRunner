@@ -14,6 +14,11 @@
           "args": true
         }
       ]
-    }
+    },
+    "fs:allow-appdata-write",
+    "fs:allow-appdata-read",
+    "fs:allow-desktop-read",
+    "fs:allow-desktop-write",
+    "fs:default"
   ]
 }

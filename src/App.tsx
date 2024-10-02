@@ -1,33 +1,51 @@
-import { Counter } from "./components/Counter"
+import { Link, Route, Router, useModel } from "kaioken"
+import { UserDataProvider, useUserData } from "./context/UserDataContext"
 
 export function App() {
   return (
-    <div className="min-h-screen flex flex-col gap-20 justify-between px-10 py-20">
-      <h1 className="text-3xl md:text-4xl md:leading-normal font-bold text-center">
-        Welcome to your Kaioken Tauri app!
-      </h1>
-      <Counter />
-      <div className="text-center text-stone-200">
-        <p>Learn at</p>
-        <div className="flex gap-4 text-xl w-full justify-center">
-          <a
-            href="https://kaioken.dev"
-            target="_blank"
-            className="font-semibold flex items-center gap-1 w-full justify-end"
-          >
-            <img className="w-5 h-5" src="/favicon.svg" alt="kaioken logo" />
-            kaioken.dev
-          </a>
-          <a
-            href="https://tauri.app"
-            target="_blank"
-            className="font-semibold flex items-center gap-1 w-full justify-start"
-          >
-            <img className="w-5 h-5" src="/tauri.png" alt="Tauri logo" />
-            tauri.app
-          </a>
-        </div>
+    <UserDataProvider>
+      <div className="min-h-screen flex flex-col gap-4 p-4">
+        <nav className="flex gap-4">
+          <Link to="/">Home</Link>
+          <Link to="/about">About</Link>
+        </nav>
+        <Router>
+          <Route path="/" element={<MainScreen />} />
+          <Route path="/about" element={<AboutScreen />} />
+        </Router>
+      </div>
+    </UserDataProvider>
+  )
+}
+
+function MainScreen() {
+  const { userData, setUserData } = useUserData()
+  const [ref, text] = useModel<HTMLInputElement>("")
+  return (
+    <div className="flex flex-col gap-4">
+      <div className="flex gap-4">
+        <input ref={ref} value={text} />
+        <button
+          type="button"
+          onclick={() => {
+            setUserData((prev) => ({
+              ...prev,
+              directories: [...prev.directories, text],
+            }))
+          }}
+        >
+          Save
+        </button>
+      </div>
+      <div className="flex flex-col gap-4">
+        {userData.directories.map((dir) => (
+          <div key={dir}>{dir}</div>
+        ))}
       </div>
     </div>
   )
+}
+
+function AboutScreen() {
+  return <h1>About</h1>
 }
