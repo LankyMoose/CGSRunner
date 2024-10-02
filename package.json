@@ -1,0 +1,28 @@
+{
+  "name": "kaioken-tauri-template",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "tauri dev",
+    "build": "tauri build",
+    "preview": "start ./src-tauri/target/release/kaioken-tauri-template.exe",
+    "dev:vite": "vite",
+    "build:vite": "tsc && vite build",
+    "preview:vite": "vite preview"
+  },
+  "devDependencies": {
+    "@tauri-apps/cli": "^2.0.0",
+    "@types/node": "^22.7.4",
+    "autoprefixer": "^10.4.20",
+    "postcss": "^8.4.47",
+    "tailwindcss": "^3.4.13",
+    "typescript": "^5.6.2",
+    "vite": "^5.4.8",
+    "vite-plugin-kaioken": "0.13.1"
+  },
+  "dependencies": {
+    "@tauri-apps/plugin-shell": "~2",
+    "kaioken": "0.32.1"
+  }
+}
