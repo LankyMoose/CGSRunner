@@ -7,4 +7,29 @@
   color: #e5e5e5;
   color-scheme: dark;
   min-height: 100vh;
+  overflow: hidden;
+}
+
+.toast {
+  @apply flex flex-col items-center justify-center absolute right-4 top-4 w-52 h-[54px] px-4 transition-all duration-300 rounded;
+}
+
+.toast-message {
+  color: #e5e5e5;
+}
+
+.toast.toast-info {
+  @apply bg-info;
+}
+
+.toast.toast-success {
+  @apply bg-success;
+}
+
+.toast.toast-warning {
+  @apply bg-warning;
+}
+
+.toast.toast-error {
+  @apply bg-error;
 }

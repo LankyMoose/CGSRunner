@@ -1,22 +1,26 @@
 import { createContext, useAsync, useContext } from "kaioken"
-import { loadUserData, saveUserData, UserData } from "../tauri/fs/userData"
+import { loadUserData, saveUserData, UserData } from "../tauri/storage/userData"
 import { LoadingOverlay } from "../components/LoadingOverlay"
 
 type UserDataCtx = {
   userData: UserData
-  setUserData: (data: Kaioken.StateSetter<UserData>) => void
+  setUserData: (
+    data: Kaioken.StateSetter<UserData>
+  ) => ReturnType<typeof saveUserData>
   loading: boolean
+  invalidate: () => void
 }
 
 const UserDataContext = createContext<UserDataCtx>({
   userData: null as any,
   loading: true,
   setUserData: null as any,
+  invalidate: null as any,
 })
 
 export const useUserData = () => useContext(UserDataContext)
 
-export function UserDataProvider({ children }: { children?: JSX.Children }) {
+export const UserDataProvider: Kaioken.FC = ({ children }) => {
   const {
     data: userData,
     loading,
@@ -28,28 +32,38 @@ export function UserDataProvider({ children }: { children?: JSX.Children }) {
     return data
   }, [])
 
-  async function setUserData(data: Kaioken.StateSetter<UserData>) {
-    if (!userData) return
+  async function setUserData(
+    data: Kaioken.StateSetter<UserData>,
+    reload = true
+  ): ReturnType<typeof saveUserData> {
+    if (!userData) return null
     const newData = typeof data === "function" ? data(userData) : data
     const err = await saveUserData(newData)
-    if (!err) return invalidate()
-    console.error(err)
-  }
-
-  if (error) {
-    return (
-      <p className="text-red-500">
-        An error occured while loading user data: {error.message}
-      </p>
-    )
+    if (!err && reload) {
+      return invalidate(), null
+    }
+    return err
   }
 
   if (loading) {
     return <LoadingOverlay />
   }
 
+  if (error) {
+    return (
+      <div>
+        <p className="text-red-500">
+          An error occured while loading user data: {error.message}
+        </p>
+        <button onclick={() => invalidate()}>Retry</button>
+      </div>
+    )
+  }
+
   return (
-    <UserDataContext.Provider value={{ userData, loading, setUserData }}>
+    <UserDataContext.Provider
+      value={{ userData, loading, setUserData, invalidate }}
+    >
       {children}
     </UserDataContext.Provider>
   )

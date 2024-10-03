@@ -5,12 +5,14 @@ import {
   writeTextFile,
 } from "@tauri-apps/plugin-fs"
 import { __DEV__ } from "../../env"
-import { UserCommand } from "../../userCommand"
+import { ScriptJob } from "../../types"
+
+type TimeStamp = string
 
 export type UserData = {
   version: string
-  directories: string[]
-  history: UserCommand[]
+  workspaces: string[]
+  history: Record<TimeStamp, ScriptJob>
 }
 export enum UserDataLoadError {
   READ_FAILURE = "READ_FAILURE",
@@ -22,8 +24,7 @@ export enum UserDataSaveError {
   VALIDATION_FAILURE = "VALIDATION_FAILURE",
 }
 
-type LoadUserDataResult = [null, UserData] | [UserDataLoadError, null]
-type SaveUserDataResult = void | UserDataSaveError
+export type LoadUserDataResult = [null, UserData] | [UserDataLoadError, null]
 
 const FILE_NAME = "user_data.json"
 const DIR_OPTIONS = {
@@ -31,8 +32,8 @@ const DIR_OPTIONS = {
 }
 const DEFAULT_DATA = {
   version: "1",
-  directories: [],
-  history: [],
+  workspaces: [],
+  history: {},
 } as const satisfies UserData
 
 if (__DEV__) {
@@ -71,12 +72,13 @@ export async function loadUserData(): Promise<LoadUserDataResult> {
 
 export async function saveUserData(
   data: UserData
-): Promise<SaveUserDataResult> {
+): Promise<null | UserDataSaveError> {
   if (!validateUserData(data)) {
     return UserDataSaveError.VALIDATION_FAILURE
   }
   try {
     await writeTextFile(FILE_NAME, JSON.stringify(data, null, 2), DIR_OPTIONS)
+    return null
   } catch (error) {
     console.error(error)
     return UserDataSaveError.WRITE_FAILURE

@@ -1,7 +1,7 @@
 import { ChildProcess, Command, SpawnOptions } from "@tauri-apps/plugin-shell"
 
 //https://tauri.app/plugin/shell/
-export async function runBashCommand(
+export async function run(
   command: string,
   options?: SpawnOptions
 ): Promise<ChildProcess<string>> {
