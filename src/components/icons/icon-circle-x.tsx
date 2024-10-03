@@ -1,6 +1,6 @@
 import type { ElementProps } from "kaioken"
 //https://lucide.dev/icons/circle-x
-export function CircleX(props: ElementProps<"svg">) {
+export function CircleXIcon(props: ElementProps<"svg">) {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"

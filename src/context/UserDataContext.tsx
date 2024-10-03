@@ -33,13 +33,12 @@ export const UserDataProvider: Kaioken.FC = ({ children }) => {
   }, [])
 
   async function setUserData(
-    data: Kaioken.StateSetter<UserData>,
-    reload = true
+    data: Kaioken.StateSetter<UserData>
   ): ReturnType<typeof saveUserData> {
     if (!userData) return null
     const newData = typeof data === "function" ? data(userData) : data
     const err = await saveUserData(newData)
-    if (!err && reload) {
+    if (!err) {
       return invalidate(), null
     }
     return err
@@ -65,6 +64,7 @@ export const UserDataProvider: Kaioken.FC = ({ children }) => {
       value={{ userData, loading, setUserData, invalidate }}
     >
       {children}
+      {loading && <LoadingOverlay />}
     </UserDataContext.Provider>
   )
 }

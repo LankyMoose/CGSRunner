@@ -1,6 +1,6 @@
 import { ElementProps } from "kaioken"
-//https://lucide.dev/icons/circle-plus
-export function CirclePlusIcon(props: ElementProps<"svg">) {
+
+export function FolderIcon(props: ElementProps<"svg">) {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -14,9 +14,7 @@ export function CirclePlusIcon(props: ElementProps<"svg">) {
       stroke-linejoin="round"
       {...props}
     >
-      <circle cx="12" cy="12" r="10" />
-      <path d="M8 12h8" />
-      <path d="M12 8v8" />
+      <path d="M20 20a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 1-1.69-.9L9.6 3.9A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2Z" />
     </svg>
   )
 }

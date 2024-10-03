@@ -30,14 +30,14 @@ const FILE_NAME = "user_data.json"
 const DIR_OPTIONS = {
   baseDir: __DEV__ ? BaseDirectory.Desktop : BaseDirectory.AppData,
 }
-const DEFAULT_DATA = {
+export const DEFAULT_USER_DATA = {
   version: "1",
   workspaces: [],
   history: {},
 } as const satisfies UserData
 
 if (__DEV__) {
-  const devStartData = DEFAULT_DATA
+  const devStartData = DEFAULT_USER_DATA
   await saveUserData(devStartData)
 }
 
@@ -47,7 +47,7 @@ function validateUserData(thing: unknown): thing is UserData {
 
 export async function loadUserData(): Promise<LoadUserDataResult> {
   const fileExists = await exists(FILE_NAME, DIR_OPTIONS)
-  if (!fileExists) await saveUserData(DEFAULT_DATA)
+  if (!fileExists) await saveUserData(DEFAULT_USER_DATA)
 
   let content: string, parsed: unknown
   try {
