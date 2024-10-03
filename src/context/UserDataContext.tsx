@@ -5,7 +5,8 @@ import { LoadingOverlay } from "../components/LoadingOverlay"
 type UserDataCtx = {
   userData: UserData
   setUserData: (
-    data: Kaioken.StateSetter<UserData>
+    data: Kaioken.StateSetter<UserData>,
+    reload?: boolean
   ) => ReturnType<typeof saveUserData>
   loading: boolean
   invalidate: () => void
@@ -33,13 +34,19 @@ export const UserDataProvider: Kaioken.FC = ({ children }) => {
   }, [])
 
   async function setUserData(
-    data: Kaioken.StateSetter<UserData>
+    data: Kaioken.StateSetter<UserData>,
+    reload: boolean = false
   ): ReturnType<typeof saveUserData> {
     if (!userData) return null
     const newData = typeof data === "function" ? data(userData) : data
     const err = await saveUserData(newData)
     if (!err) {
-      return invalidate(), null
+      if (reload) {
+        invalidate()
+      } else {
+        Object.assign(userData, newData)
+      }
+      return null
     }
     return err
   }
