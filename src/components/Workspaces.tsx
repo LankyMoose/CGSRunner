@@ -8,8 +8,8 @@ import { CircleXIcon } from "./icons/icon-circle-x"
 
 export function Workspaces() {
   return (
-    <div className="flex flex-col gap-4">
-      <h1 className="text-3xl font-bold">Workspaces</h1>
+    <div className="flex flex-col gap-2">
+      <h1 className="text-2xl font-bold">Workspaces</h1>
       <WorkspacesList />
     </div>
   )
@@ -41,23 +41,26 @@ function WorkspacesList({ className = "", ...props }: ElementProps<"ul">) {
         {...props}
       >
         {workspaces.length === 0 && (
-          <li className="flex gap-4 items-center justify-between border-2 px-2 py-1 rounded bg-black bg-opacity-10">
+          <li className="flex items-center py-1">
             <i>No workspaces...</i>
           </li>
         )}
         {workspaces.map((dir) => (
           <li
             key={dir}
-            className="flex gap-4 items-center justify-between border-2 px-2 py-1 rounded"
+            className="flex gap-2 items-center justify-between px-2 bg-white bg-opacity-5 rounded border border-white border-opacity-10"
           >
-            <span>{dir}</span>
-            <button onclick={() => handleRemoveClick(dir)}>
-              <CircleXIcon />
+            <span className="text-xs font-bold">{dir}</span>
+            <button
+              className="opacity-50 hover:opacity-100"
+              onclick={() => handleRemoveClick(dir)}
+            >
+              <CircleXIcon className="w-4 h-4 min-w-4" />
             </button>
           </li>
         ))}
       </ul>
-      <AddWorkspaceButton className="px-2 py-1" />
+      <AddWorkspaceButton className="px-2 py-1 opacity-50 hover:opacity-100" />
     </div>
   )
 }

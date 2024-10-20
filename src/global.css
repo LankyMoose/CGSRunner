@@ -15,7 +15,7 @@
   height: 100vh;
   max-height: 100vh;
   display: grid;
-  grid-template-rows: calc(100px + 1rem) 1fr;
+  grid-template-rows: calc(82px + 1rem) 1fr;
 }
 
 main,
@@ -72,4 +72,9 @@ main #script-selector {
 
 .toast.toast-error {
   @apply bg-error;
+}
+
+.badge {
+  @apply rounded border border-white border-opacity-10 bg-neutral-100 bg-opacity-25 px-1;
+  font-size: 10px;
 }

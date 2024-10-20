@@ -25,17 +25,14 @@ export function Packages() {
   return (
     <div id="packages" className="flex flex-col gap-2 p-2 h-full glass-panel">
       <div className="flex justify-between">
-        <h1 className="text-3xl font-bold">
-          Packages{" "}
-          {packages === null ? (
-            ""
-          ) : (
-            <sup className="text-xs bg-neutral-200 px-2 py-1 rounded text-black">
-              ({packages.length})
-            </sup>
-          )}
-        </h1>
-        <button className="flex items-center" onclick={invalidate}>
+        <div className="flex gap-2 items-start">
+          <h1 className="text-2xl font-bold">Packages</h1>
+          {packages && <small className="badge">({packages.length})</small>}
+        </div>
+        <button
+          className="flex items-center opacity-50 hover:opacity-100"
+          onclick={invalidate}
+        >
           <RefreshIcon />
         </button>
       </div>
@@ -53,7 +50,7 @@ export function Packages() {
 function PackagesList({ packages }: { packages: string[] }) {
   return (
     <div
-      className={`flex flex-col gap-1 overflow-y-auto max-h-[calc(100vh-256px)]`}
+      className={`flex flex-col gap-1 overflow-y-auto max-h-[calc(100vh-234px)]`}
     >
       {packages.length === 0 && (
         <p>
@@ -72,15 +69,15 @@ function PackagesList({ packages }: { packages: string[] }) {
               selectedPackages.value = [...selectedPackages.value, pkg]
             }
           }}
-          className={`flex gap-2 items-center border border-white px-2 py-1 rounded border-opacity-10 ${
+          className={`flex gap-2 items-center border border-white px-2 py-1 rounded border-opacity-10 text-neutral-300 hover:text-neutral-100 ${
             selectedPackages.value.includes(pkg)
               ? "bg-red-500 bg-opacity-30"
               : "bg-white bg-opacity-5"
           }`}
           title={pkg}
         >
-          <FolderIcon className="w-6 h-6 min-w-6" />
-          <span className="truncate max-w-full">{pkg}</span>
+          <FolderIcon className="w-4 h-4 min-w-4" />
+          <span className="truncate max-w-full text-sm">{pkg}</span>
         </button>
       ))}
     </div>
