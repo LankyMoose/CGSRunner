@@ -18,9 +18,10 @@ export function Workspaces() {
 function WorkspacesList({ className = "", ...props }: ElementProps<"ul">) {
   const showToast = useToast()
   const { userData, setUserData } = useUserData()
+  const workspaces = userData?.workspaces || []
 
   const handleRemoveClick = async (dir: string) => {
-    const newWorkSpaces = userData.workspaces.filter((w) => w !== dir)
+    const newWorkSpaces = workspaces.filter((w) => w !== dir)
     const saveError = await setUserData((prev) => ({
       ...prev,
       workspaces: newWorkSpaces,
@@ -39,12 +40,12 @@ function WorkspacesList({ className = "", ...props }: ElementProps<"ul">) {
         className={twMerge("flex-grow flex flex-wrap gap-1", `${className}`)}
         {...props}
       >
-        {userData.workspaces.length === 0 && (
+        {workspaces.length === 0 && (
           <li className="flex gap-4 items-center justify-between border-2 px-2 py-1 rounded bg-neutral-700">
             <i>No workspaces...</i>
           </li>
         )}
-        {userData.workspaces.map((dir) => (
+        {workspaces.map((dir) => (
           <li
             key={dir}
             className="flex gap-4 items-center justify-between border-2 px-2 py-1 rounded"
@@ -69,7 +70,7 @@ function AddWorkspaceButton(props: ElementProps<"button">) {
     const selectedFolders = await openFolderSelectorDialog()
     if (selectedFolders === null) return
     const newWorkSpaces = [
-      ...new Set([...userData.workspaces, ...selectedFolders]),
+      ...new Set([...(userData?.workspaces ?? []), ...selectedFolders]),
     ]
     const saveError = await setUserData((prev) => ({
       ...prev,
@@ -89,7 +90,7 @@ function AddWorkspaceButton(props: ElementProps<"button">) {
       "success",
       selectedFolders.length > 1 ? "Added workspaces" : "Added workspace"
     )
-  }, [])
+  }, [userData?.workspaces])
 
   return (
     <button {...props} onclick={handleClick}>

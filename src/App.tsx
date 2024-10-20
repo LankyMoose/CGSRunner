@@ -2,24 +2,45 @@ import { UserDataProvider } from "./context/UserDataContext"
 import { ToastContextProvider } from "./context/ToastContext"
 import { Workspaces } from "./components/Workspaces"
 import { Packages } from "./components/Packages"
+import { useLayoutEffect, useRef } from "kaioken"
+import { LayoutProvider, useLayout } from "./context/LayoutContext"
 
+const Providers: Kaioken.FC = ({ children }) => {
+  return (
+    <UserDataProvider>
+      <ToastContextProvider>
+        <LayoutProvider>{children}</LayoutProvider>
+      </ToastContextProvider>
+    </UserDataProvider>
+  )
+}
 export function App() {
   return (
-    <ToastContextProvider>
-      <UserDataProvider>
-        <div className="min-h-screen flex flex-col gap-4 p-4">
-          <MainScreen />
-        </div>
-      </UserDataProvider>
-    </ToastContextProvider>
+    <Providers>
+      <Header />
+      <Main />
+    </Providers>
   )
 }
 
-function MainScreen() {
+function Header() {
+  const { registerHeightOffset } = useLayout()
+  const headerRef = useRef<HTMLElement>(null)
+  useLayoutEffect(() => {
+    if (!headerRef.current) return
+    registerHeightOffset(headerRef.current)
+  }, [headerRef.current])
   return (
-    <div className="flex flex-col gap-4">
+    <header ref={headerRef} className="p-2">
       <Workspaces />
+    </header>
+  )
+}
+
+function Main() {
+  return (
+    <main className="p-2">
       <Packages />
-    </div>
+    </main>
   )
 }

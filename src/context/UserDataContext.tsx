@@ -3,7 +3,7 @@ import { loadUserData, saveUserData, UserData } from "../tauri/storage/userData"
 import { LoadingOverlay } from "../components/LoadingOverlay"
 
 type UserDataCtx = {
-  userData: UserData
+  userData: UserData | null
   setUserData: (
     data: Kaioken.StateSetter<UserData>,
     reload?: boolean
@@ -49,10 +49,6 @@ export const UserDataProvider: Kaioken.FC = ({ children }) => {
       return null
     }
     return err
-  }
-
-  if (loading) {
-    return <LoadingOverlay />
   }
 
   if (error) {
