@@ -37,7 +37,10 @@ function WorkspacesList({ className = "", ...props }: ElementProps<"ul">) {
   return (
     <div className="flex p-2 glass-panel">
       <ul
-        className={twMerge("flex-grow flex flex-wrap gap-1", `${className}`)}
+        className={twMerge(
+          "flex-grow flex flex-wrap gap-1 max-h-[32px] overflow-y-auto",
+          `${className}`
+        )}
         {...props}
       >
         {workspaces.length === 0 && (

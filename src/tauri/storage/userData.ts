@@ -36,10 +36,10 @@ export const DEFAULT_USER_DATA = {
   history: {},
 } as const satisfies UserData
 
-if (__DEV__) {
-  const devStartData = DEFAULT_USER_DATA
-  await saveUserData(devStartData)
-}
+// if (__DEV__) {
+//   const devStartData = DEFAULT_USER_DATA
+//   await saveUserData(devStartData)
+// }
 
 function validateUserData(thing: unknown): thing is UserData {
   return typeof thing === "object"

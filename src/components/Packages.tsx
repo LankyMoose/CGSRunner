@@ -50,7 +50,7 @@ export function Packages() {
 function PackagesList({ packages }: { packages: string[] }) {
   return (
     <div
-      className={`flex flex-col gap-1 overflow-y-auto max-h-[calc(100vh-234px)]`}
+      className={`flex flex-col gap-1 max-h-[calc(100vh-234px)] overflow-y-auto`}
     >
       {packages.length === 0 && (
         <p>

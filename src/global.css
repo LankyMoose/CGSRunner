@@ -4,8 +4,8 @@
 
 :root {
   background-color: rgb(21 19 19);
-  background-image: linear-gradient(142deg, #000, #211b3c);
-  color: #e5e5e5;
+  background-image: linear-gradient(142deg, #111, #1b182c);
+  color: #ddd;
   color-scheme: dark;
   min-height: 100vh;
   overflow: hidden;
@@ -47,7 +47,7 @@ main #script-selector {
 }
 
 .glass-panel {
-  @apply bg-white bg-opacity-5 rounded border border-white border-opacity-10;
+  @apply bg-neutral-400 bg-opacity-5 rounded border border-neutral-400 border-opacity-10;
 }
 
 .toast {
