@@ -4,6 +4,8 @@ import { findPackages } from "../tauri/bash/findPackages"
 import { FolderIcon } from "./icons/icon-folder"
 import { RefreshIcon } from "./icons/icon-refresh"
 
+const selectedPackages = signal<string[]>([])
+
 export function Packages() {
   const { userData } = useUserData()
   const {
@@ -17,6 +19,7 @@ export function Packages() {
       .flat()
       .filter((v, i, arr) => arr.indexOf(v) === i)
     console.log("PackagesList", res)
+    selectedPackages.value = []
     return res
   }, [userData?.workspaces])
 
@@ -47,8 +50,6 @@ export function Packages() {
     </div>
   )
 }
-
-const selectedPackages = signal<string[]>([])
 
 function PackagesList({ packages }: { packages: string[] }) {
   return (
