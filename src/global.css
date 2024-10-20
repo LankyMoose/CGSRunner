@@ -26,9 +26,28 @@ header {
 main {
   --history-width: 300px;
   display: grid;
-  max-width: 100vw;
+  max-width: calc(100vw - .5rem);
+  grid-template-areas:
+    "packages        history"
+    "script-selector history";
   grid-template-columns: calc(100% - var(--history-width)) var(--history-width);
-  grid-template-rows: 1fr;
+  grid-template-rows: 1fr 60px;
+}
+
+main #packages {
+  grid-area: packages;
+}
+
+main #history {
+  grid-area: history;
+}
+
+main #script-selector {
+  grid-area: script-selector;
+}
+
+.glass-panel {
+  @apply bg-white bg-opacity-5 rounded border border-white border-opacity-10;
 }
 
 .toast {

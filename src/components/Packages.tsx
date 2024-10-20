@@ -24,7 +24,7 @@ export function Packages() {
   }, [userData?.workspaces])
 
   return (
-    <div className="flex flex-col gap-2 p-2 h-full bg-black bg-opacity-20 rounded">
+    <div id="packages" className="flex flex-col gap-2 p-2 h-full glass-panel">
       <div className="flex justify-between">
         <h1 className="text-3xl font-bold">
           Packages{" "}
@@ -54,7 +54,7 @@ export function Packages() {
 function PackagesList({ packages }: { packages: string[] }) {
   return (
     <div
-      className={`flex flex-col gap-1 p-1 overflow-y-auto max-h-[calc(100vh-194px)]`}
+      className={`flex flex-col gap-1 p-1 overflow-y-auto max-h-[calc(100vh-262px)]`}
     >
       {packages.length === 0 && (
         <p>
