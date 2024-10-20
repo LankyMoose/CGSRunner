@@ -1,10 +1,9 @@
-import { signal, useAsync } from "kaioken"
+import { useAsync } from "kaioken"
 import { useUserData } from "../context/UserDataContext"
 import { findPackages } from "../tauri/bash/findPackages"
 import { FolderIcon } from "./icons/icon-folder"
 import { RefreshIcon } from "./icons/icon-refresh"
-
-const selectedPackages = signal<string[]>([])
+import { selectedPackages } from "../state"
 
 export function Packages() {
   const { userData } = useUserData()
@@ -54,7 +53,7 @@ export function Packages() {
 function PackagesList({ packages }: { packages: string[] }) {
   return (
     <div
-      className={`flex flex-col gap-1 p-1 overflow-y-auto max-h-[calc(100vh-262px)]`}
+      className={`flex flex-col gap-1 overflow-y-auto max-h-[calc(100vh-256px)]`}
     >
       {packages.length === 0 && (
         <p>

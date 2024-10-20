@@ -1,7 +1,8 @@
-import { useId, useSignal } from "kaioken"
+import { useRef, useSignal } from "kaioken"
+import { selectedPackages } from "../state"
 
 export function ScriptSelector() {
-  const inputId = useId()
+  const inputRef = useRef<HTMLInputElement>(null)
   const selectedFile = useSignal<File | null>(null)
   return (
     <div
@@ -10,8 +11,8 @@ export function ScriptSelector() {
     >
       <div>
         <input
+          ref={inputRef}
           className={"hidden"}
-          id={inputId}
           type="file"
           accept={".sh"}
           onchange={(e) => {
@@ -20,18 +21,22 @@ export function ScriptSelector() {
             selectedFile.value = e.target.files[0]
           }}
         />
-        <label htmlFor={inputId} className="cursor-pointer">
+        <button
+          className="px-2 py-1 font-bold glass-panel max-w-60 truncate"
+          onclick={() => inputRef.current?.click()}
+        >
           {selectedFile.value ? selectedFile.value.name : "Select script"}
-        </label>
+        </button>
       </div>
-      {selectedFile.value && (
+      {selectedFile.value && selectedPackages.value.length > 0 && (
         <div>
           <button
+            className="px-2 py-1 font-bold bg-success shadow bg-opacity-50 rounded border border-white border-opacity-10 hover:bg-opacity-100"
             onclick={() => {
               console.log(selectedFile.value)
             }}
           >
-            Run script against 2 packages
+            Run script on selected packages
           </button>
         </div>
       )}
