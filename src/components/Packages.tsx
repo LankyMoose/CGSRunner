@@ -52,7 +52,9 @@ const selectedPackages = signal<string[]>([])
 
 function PackagesList({ packages }: { packages: string[] }) {
   return (
-    <div className={`flex flex-col gap-1 p-1 overflow-y-auto`}>
+    <div
+      className={`flex flex-col gap-1 p-1 overflow-y-auto max-h-[calc(100vh-194px)]`}
+    >
       {packages.length === 0 && (
         <p>
           <i>No packages found</i>
