@@ -69,10 +69,10 @@ function PackagesList({ packages }: { packages: string[] }) {
               selectedPackages.value = [...selectedPackages.value, pkg]
             }
           }}
-          className={`flex gap-2 items-center border border-white px-2 py-1 rounded border-opacity-10 hover:text-neutral-100 ${
+          className={`flex gap-2 items-center border border-white px-2 py-1 rounded border-opacity-5 hover:text-neutral-100 ${
             selectedPackages.value.includes(pkg)
-              ? "bg-indigo-500 bg-opacity-20 text-neutral-100"
-              : "bg-white bg-opacity-5 text-neutral-300"
+              ? "bg-indigo-500 bg-opacity-25 text-neutral-100"
+              : "bg-neutral-400 bg-opacity-5 text-neutral-300"
           }`}
           title={pkg}
         >

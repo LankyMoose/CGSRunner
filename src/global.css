@@ -47,7 +47,7 @@ main #script-selector {
 }
 
 .glass-panel {
-  @apply bg-neutral-400 bg-opacity-5 rounded border border-neutral-400 border-opacity-10;
+  @apply bg-neutral-400 bg-opacity-5 rounded border border-neutral-400 border-opacity-5;
 }
 
 .toast {
