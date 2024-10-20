@@ -12,20 +12,20 @@
     "preview:vite": "vite preview"
   },
   "devDependencies": {
-    "@tauri-apps/cli": "^2.0.0",
-    "@types/node": "^22.7.4",
+    "@tauri-apps/cli": "^2.0.3",
+    "@types/node": "^22.7.7",
     "autoprefixer": "^10.4.20",
     "postcss": "^8.4.47",
-    "tailwindcss": "^3.4.13",
-    "typescript": "^5.6.2",
-    "vite": "^5.4.8",
-    "vite-plugin-kaioken": "0.13.1"
+    "tailwindcss": "^3.4.14",
+    "typescript": "^5.6.3",
+    "vite": "^5.4.9",
+    "vite-plugin-kaioken": "0.14.4"
   },
   "dependencies": {
-    "@tauri-apps/plugin-dialog": "~2",
-    "@tauri-apps/plugin-fs": "~2",
-    "@tauri-apps/plugin-shell": "~2",
-    "kaioken": "0.32.1",
-    "tailwind-merge": "^2.5.2"
+    "@tauri-apps/plugin-dialog": "~2.0.0",
+    "@tauri-apps/plugin-fs": "~2.0.0",
+    "@tauri-apps/plugin-shell": "~2.0.0",
+    "kaioken": "0.34.0",
+    "tailwind-merge": "^2.5.4"
   }
 }

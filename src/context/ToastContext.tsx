@@ -20,7 +20,7 @@ type Toast = {
 const defaultDuration = 3000
 
 const ToastContext = createContext<{
-  showToast: (type: Toast["type"], message: string) => void
+  (type: Toast["type"], message: string): void
 }>(null as any)
 
 export const useToast = () => useContext(ToastContext)
@@ -61,7 +61,7 @@ export const ToastContextProvider: Kaioken.FC = ({ children }) => {
   }
 
   return (
-    <ToastContext.Provider value={{ showToast }}>
+    <ToastContext.Provider value={showToast}>
       {children}
       <Portal container={() => document.getElementById("toast-root")!}>
         {toasts.map((toast, i) => (

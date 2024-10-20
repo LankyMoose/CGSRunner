@@ -16,7 +16,7 @@ export function Workspaces() {
 }
 
 function WorkspacesList({ className = "", ...props }: ElementProps<"ul">) {
-  const { showToast } = useToast()
+  const showToast = useToast()
   const { userData, setUserData } = useUserData()
 
   const handleRemoveClick = async (dir: string) => {
@@ -62,7 +62,7 @@ function WorkspacesList({ className = "", ...props }: ElementProps<"ul">) {
 }
 
 function AddWorkspaceButton(props: ElementProps<"button">) {
-  const { showToast } = useToast()
+  const showToast = useToast()
   const { userData, setUserData } = useUserData()
 
   const handleClick = useCallback(async () => {
