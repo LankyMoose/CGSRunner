@@ -79,8 +79,8 @@ function PackagesList({ packages }: { packages: string[] }) {
           }`}
           title={pkg}
         >
-          <FolderIcon className="w-6 h-6" />
-          <span className="truncate max-w-80">{pkg}</span>
+          <FolderIcon className="w-6 h-6 min-w-6" />
+          <span className="truncate max-w-full">{pkg}</span>
         </button>
       ))}
     </div>

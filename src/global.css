@@ -24,8 +24,10 @@ header {
 }
 
 main {
+  --history-width: 300px;
   display: grid;
-  grid-template-columns: 70% 30%;
+  max-width: 100vw;
+  grid-template-columns: calc(100% - var(--history-width)) var(--history-width);
   grid-template-rows: 1fr;
 }
 
