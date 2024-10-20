@@ -1,18 +1,10 @@
-import { signal, useAsync, useLayoutEffect, useRef } from "kaioken"
+import { signal, useAsync } from "kaioken"
 import { useUserData } from "../context/UserDataContext"
 import { findPackages } from "../tauri/bash/findPackages"
 import { FolderIcon } from "./icons/icon-folder"
 import { RefreshIcon } from "./icons/icon-refresh"
-import { useLayout } from "../context/LayoutContext"
 
 export function Packages() {
-  const { registerHeightOffset } = useLayout()
-  const headerRef = useRef<HTMLDivElement>(null)
-  useLayoutEffect(() => {
-    if (!headerRef.current) return
-    registerHeightOffset(headerRef.current)
-  }, [headerRef.current])
-
   const { userData } = useUserData()
   const {
     data: packages,
@@ -29,8 +21,8 @@ export function Packages() {
   }, [userData?.workspaces])
 
   return (
-    <div className="flex flex-col gap-2">
-      <div className="flex justify-between" ref={headerRef}>
+    <div className="flex flex-col gap-2 p-2 h-full bg-black bg-opacity-20 rounded">
+      <div className="flex justify-between">
         <h1 className="text-3xl font-bold">
           Packages{" "}
           {packages === null ? (
@@ -59,13 +51,8 @@ export function Packages() {
 const selectedPackages = signal<string[]>([])
 
 function PackagesList({ packages }: { packages: string[] }) {
-  const { useHeightOffset } = useLayout()
-  const heightOffset = useHeightOffset()
   return (
-    <div
-      className={`flex flex-col gap-1 p-1 overflow-y-auto`}
-      style={`max-height: calc(100vh - ${heightOffset}px - 1.5rem)`}
-    >
+    <div className={`flex flex-col gap-1 p-1 overflow-y-auto`}>
       {packages.length === 0 && (
         <p>
           <i>No packages found</i>
@@ -83,13 +70,15 @@ function PackagesList({ packages }: { packages: string[] }) {
               selectedPackages.value = [...selectedPackages.value, pkg]
             }
           }}
-          className={`flex gap-2 items-center border border-white px-2 py-1 rounded bg-opacity-30 border-opacity-30 ${
-            selectedPackages.value.includes(pkg) ? "bg-blue-500" : ""
+          className={`flex gap-2 items-center border border-white px-2 py-1 rounded border-opacity-10 ${
+            selectedPackages.value.includes(pkg)
+              ? "bg-red-500 bg-opacity-30"
+              : "bg-white bg-opacity-5"
           }`}
           title={pkg}
         >
           <FolderIcon className="w-6 h-6" />
-          <span className="truncate">{pkg}</span>
+          <span className="truncate max-w-80">{pkg}</span>
         </button>
       ))}
     </div>

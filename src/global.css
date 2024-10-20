@@ -4,6 +4,7 @@
 
 :root {
   background-color: rgb(21 19 19);
+  background-image: linear-gradient(169deg, #201a3c, #290e1b);
   color: #e5e5e5;
   color-scheme: dark;
   min-height: 100vh;
@@ -11,8 +12,21 @@
 }
 
 #app {
+  height: 100vh;
   max-height: 100vh;
-  overflow: auto;
+  display: grid;
+  grid-template-rows: calc(100px + 1rem) 1fr;
+}
+
+main,
+header {
+  @apply p-2 gap-2;
+}
+
+main {
+  display: grid;
+  grid-template-columns: 70% 30%;
+  grid-template-rows: 1fr;
 }
 
 .toast {
