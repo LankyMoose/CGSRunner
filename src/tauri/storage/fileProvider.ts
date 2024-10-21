@@ -22,7 +22,7 @@ export enum SaveError {
 
 export type LoadResult<T> = [null, T] | [LoadError, null]
 
-export class FileHandler<T> {
+export class FileProvider<T> {
   constructor(
     private options: {
       fileName: string
@@ -45,6 +45,7 @@ export class FileHandler<T> {
       parsed = JSON.parse(content)
     } catch (e) {
       console.error(e)
+
       return [LoadError.PARSE_FAILURE, null]
     }
 
@@ -65,6 +66,7 @@ export class FileHandler<T> {
         JSON.stringify(data, null, 2),
         DIR_OPTIONS
       )
+
       return null
     } catch (error) {
       console.error(error)

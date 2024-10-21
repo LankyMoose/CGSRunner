@@ -1,12 +1,12 @@
 import { useAsync } from "kaioken"
-import { useUserData } from "../context/UserDataContext"
 import { findPackages } from "../tauri/bash/findPackages"
 import { FolderIcon } from "./icons/icon-folder"
 import { RefreshIcon } from "./icons/icon-refresh"
 import { useScriptJob } from "../context/ScriptJobContext"
+import { useWorkspaces } from "../context/FileProviders"
 
 export function Packages() {
-  const { workspaces } = useUserData()
+  const { data: workspaces } = useWorkspaces()
   const { targets, setTargets } = useScriptJob()
   const {
     data: packages,

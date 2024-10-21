@@ -1,10 +1,10 @@
 import { ElementProps, useCallback } from "kaioken"
 import { twMerge } from "tailwind-merge"
 import { useToast } from "../context/ToastContext"
-import { useUserData } from "../context/UserDataContext"
 import { openFolderSelectorDialog } from "../tauri/dialog"
 import { CirclePlusIcon } from "./icons/icon-circle-plus"
 import { CircleXIcon } from "./icons/icon-circle-x"
+import { useWorkspaces } from "../context/FileProviders"
 
 export function Workspaces() {
   return (
@@ -17,12 +17,12 @@ export function Workspaces() {
 
 function WorkspacesList({ className = "", ...props }: ElementProps<"ul">) {
   const showToast = useToast()
-  const { workspaces, setWorkspaces } = useUserData()
+  const { data, setData } = useWorkspaces()
 
   const handleRemoveClick = async (dir: string) => {
-    if (!workspaces) return
-    const newWorkSpaces = workspaces.workspaces.filter((w) => w !== dir)
-    const saveError = await setWorkspaces((prev) => ({
+    if (!data) return
+    const newWorkSpaces = data.workspaces.filter((w) => w !== dir)
+    const saveError = await setData((prev) => ({
       ...prev,
       workspaces: newWorkSpaces,
     }))
@@ -43,12 +43,12 @@ function WorkspacesList({ className = "", ...props }: ElementProps<"ul">) {
         )}
         {...props}
       >
-        {(workspaces?.workspaces.length || 0) === 0 && (
+        {(data?.workspaces.length || 0) === 0 && (
           <li className="flex items-center py-1">
             <i>No workspaces...</i>
           </li>
         )}
-        {workspaces?.workspaces.map((dir) => (
+        {data?.workspaces.map((dir) => (
           <li
             key={dir}
             className="flex gap-2 items-center justify-between px-2 bg-white bg-opacity-5 rounded border border-white border-opacity-10"
@@ -70,15 +70,15 @@ function WorkspacesList({ className = "", ...props }: ElementProps<"ul">) {
 
 function AddWorkspaceButton(props: ElementProps<"button">) {
   const showToast = useToast()
-  const { workspaces, setWorkspaces } = useUserData()
+  const { data, setData } = useWorkspaces()
 
   const handleClick = useCallback(async () => {
     const selectedFolders = await openFolderSelectorDialog()
     if (selectedFolders === null) return
     const newWorkSpaces = [
-      ...new Set([...(workspaces?.workspaces ?? []), ...selectedFolders]),
+      ...new Set([...(data?.workspaces ?? []), ...selectedFolders]),
     ]
-    const saveError = await setWorkspaces((prev) => ({
+    const saveError = await setData((prev) => ({
       ...prev,
       workspaces: newWorkSpaces,
     }))
@@ -96,7 +96,7 @@ function AddWorkspaceButton(props: ElementProps<"button">) {
       "success",
       selectedFolders.length > 1 ? "Added workspaces" : "Added workspace"
     )
-  }, [workspaces])
+  }, [data])
 
   return (
     <button {...props} onclick={handleClick}>

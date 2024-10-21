@@ -1,6 +1,6 @@
 import { __DEV__ } from "../../env"
 import { ScriptJob } from "../../types"
-import { FileHandler } from "./fs"
+import { FileProvider } from "./fileProvider"
 
 type TimeStamp = string
 
@@ -13,12 +13,12 @@ export type UserHistory = {
   history: Record<TimeStamp, ScriptJob>
 }
 
-export const workspacesFileHandler = new FileHandler<UserWorkspaces>({
+export const workspacesFileProvider = new FileProvider<UserWorkspaces>({
   fileName: "workspaces.json",
   defaultData: {
     version: "0.0.0",
     workspaces: [],
-  } as UserWorkspaces,
+  },
   validate: (data): data is UserWorkspaces => {
     return (
       typeof data === "object" &&
@@ -30,12 +30,12 @@ export const workspacesFileHandler = new FileHandler<UserWorkspaces>({
   },
 })
 
-export const historyFileHandler = new FileHandler<UserHistory>({
+export const historyFileProvider = new FileProvider<UserHistory>({
   fileName: "history.json",
   defaultData: {
     version: "0.0.0",
     history: {},
-  } as UserHistory,
+  },
   validate: (data): data is UserHistory => {
     return (
       typeof data === "object" &&

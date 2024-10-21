@@ -1,13 +1,13 @@
-import { useUserData } from "../context/UserDataContext"
+import { useHistory } from "../context/FileProviders"
 import { UserHistory } from "../tauri/storage/userData"
 import { ScriptJob } from "../types"
 
 export function ExecutionHistory() {
-  const { history } = useUserData()
+  const { data } = useHistory()
   return (
     <div id="history" className="flex flex-col gap-2 p-2 glass-panel">
       <h1 className="text-2xl font-bold">History</h1>
-      {history && <HistoryList history={history} />}
+      {data && <HistoryList history={data} />}
     </div>
   )
 }
@@ -24,13 +24,13 @@ function HistoryList({ history }: { history: UserHistory }) {
 }
 
 function JobDisplay({ job, ts }: { job: ScriptJob; ts: string }) {
-  const { history, setHistory } = useUserData()
+  const { data, setData } = useHistory()
 
   const deleteJob = async () => {
-    if (!history) return
-    const newHistory = { ...history, history: { ...history.history } }
+    if (!data) return
+    const newHistory = { ...data, history: { ...data.history } }
     delete newHistory.history[ts]
-    await setHistory(newHistory)
+    await setData(newHistory)
   }
 
   return (
@@ -51,7 +51,7 @@ function JobDisplay({ job, ts }: { job: ScriptJob; ts: string }) {
           Delete
         </button>
         <button className="glass-panel px-1 hover:bg-info hover:bg-opacity-50">
-          View results
+          View details
         </button>
       </div>
     </div>
