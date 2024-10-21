@@ -82,3 +82,16 @@ main #script-selector {
 button:disabled {
   @apply opacity-50 grayscale pointer-events-none;
 }
+
+.modal-backdrop {
+  @apply fixed top-0 left-0 right-0 bottom-0 transition;
+  background: #1117;
+}
+
+.modal {
+  @apply fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 p-2 transition rounded;
+  background: #1f1f2b;
+  max-width: 90vw;
+  max-height: 90vh;
+  overflow-y: auto;
+}
