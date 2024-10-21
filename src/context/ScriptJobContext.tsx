@@ -2,6 +2,7 @@ import { createContext, useContext, useState } from "kaioken"
 import { ScriptJob, ScriptSelection } from "../types"
 import { runBash } from "../tauri/bash/run"
 import { useUserData } from "./UserDataContext"
+import { useToast } from "./ToastContext"
 
 type ScriptJobCtx = {
   targets: string[]
@@ -20,13 +21,15 @@ const ScriptJobContext = createContext<ScriptJobCtx>({
 export const useScriptJob = () => useContext(ScriptJobContext)
 
 export const ScriptJobProvider: Kaioken.FC = ({ children }) => {
-  const { userData, setUserData } = useUserData()
+  const showToast = useToast()
+  const { history, setHistory } = useUserData()
   const [running, setRunning] = useState(false)
   const [targets, setTargets] = useState<string[]>([])
 
   const runJob = async (script: ScriptSelection) => {
+    debugger
     if (running) return
-    if (!userData) return
+    if (!history) return
     setRunning(true)
     const job: ScriptJob = {
       script,
@@ -34,16 +37,18 @@ export const ScriptJobProvider: Kaioken.FC = ({ children }) => {
     }
     const ts = Date.now()
 
-    for await (const pkg of targets) {
-      const res = await runBash(job.script.contents, { cwd: pkg })
-      job.targets[pkg] = { result: res }
+    try {
+      for await (const pkg of targets) {
+        const res = await runBash(job.script.contents, { cwd: pkg })
+        job.targets[pkg] = { result: res }
+      }
+      await setHistory({
+        ...history,
+        history: { ...history.history, [ts]: job },
+      })
+    } catch (error) {
+      showToast("danger", String(error))
     }
-
-    await setUserData({
-      ...userData,
-      history: { ...userData.history, [ts]: job },
-    })
-
     setRunning(false)
   }
   return (

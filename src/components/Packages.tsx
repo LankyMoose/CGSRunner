@@ -6,7 +6,7 @@ import { RefreshIcon } from "./icons/icon-refresh"
 import { useScriptJob } from "../context/ScriptJobContext"
 
 export function Packages() {
-  const { userData } = useUserData()
+  const { workspaces } = useUserData()
   const { targets, setTargets } = useScriptJob()
   const {
     data: packages,
@@ -14,14 +14,14 @@ export function Packages() {
     error,
     invalidate,
   } = useAsync(async () => {
-    if (!userData) return []
-    const res = (await Promise.all(userData.workspaces.map(findPackages)))
+    if (!workspaces) return []
+    const res = (await Promise.all(workspaces.workspaces.map(findPackages)))
       .flat()
       .filter((v, i, arr) => arr.indexOf(v) === i)
     console.log("PackagesList", res)
     setTargets([])
     return res
-  }, [userData?.workspaces])
+  }, [workspaces])
 
   const removePackage = (pkg: string) => {
     setTargets(targets.filter((p) => p !== pkg))

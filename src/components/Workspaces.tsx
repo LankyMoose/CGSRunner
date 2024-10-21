@@ -17,18 +17,18 @@ export function Workspaces() {
 
 function WorkspacesList({ className = "", ...props }: ElementProps<"ul">) {
   const showToast = useToast()
-  const { userData, setUserData } = useUserData()
-  const workspaces = userData?.workspaces || []
+  const { workspaces, setWorkspaces } = useUserData()
 
   const handleRemoveClick = async (dir: string) => {
-    const newWorkSpaces = workspaces.filter((w) => w !== dir)
-    const saveError = await setUserData((prev) => ({
+    if (!workspaces) return
+    const newWorkSpaces = workspaces.workspaces.filter((w) => w !== dir)
+    const saveError = await setWorkspaces((prev) => ({
       ...prev,
       workspaces: newWorkSpaces,
     }))
     if (saveError) {
       console.error(saveError)
-      showToast("error", "Failed to remove workspace")
+      showToast("danger", "Failed to remove workspace")
       return
     }
     showToast("success", "Removed workspace")
@@ -43,12 +43,12 @@ function WorkspacesList({ className = "", ...props }: ElementProps<"ul">) {
         )}
         {...props}
       >
-        {workspaces.length === 0 && (
+        {(workspaces?.workspaces.length || 0) === 0 && (
           <li className="flex items-center py-1">
             <i>No workspaces...</i>
           </li>
         )}
-        {workspaces.map((dir) => (
+        {workspaces?.workspaces.map((dir) => (
           <li
             key={dir}
             className="flex gap-2 items-center justify-between px-2 bg-white bg-opacity-5 rounded border border-white border-opacity-10"
@@ -70,22 +70,22 @@ function WorkspacesList({ className = "", ...props }: ElementProps<"ul">) {
 
 function AddWorkspaceButton(props: ElementProps<"button">) {
   const showToast = useToast()
-  const { userData, setUserData } = useUserData()
+  const { workspaces, setWorkspaces } = useUserData()
 
   const handleClick = useCallback(async () => {
     const selectedFolders = await openFolderSelectorDialog()
     if (selectedFolders === null) return
     const newWorkSpaces = [
-      ...new Set([...(userData?.workspaces ?? []), ...selectedFolders]),
+      ...new Set([...(workspaces?.workspaces ?? []), ...selectedFolders]),
     ]
-    const saveError = await setUserData((prev) => ({
+    const saveError = await setWorkspaces((prev) => ({
       ...prev,
       workspaces: newWorkSpaces,
     }))
     if (saveError) {
       console.error(saveError)
       showToast(
-        "error",
+        "danger",
         selectedFolders.length > 1
           ? "Failed to add workspaces"
           : "Failed to add workspace"
@@ -96,7 +96,7 @@ function AddWorkspaceButton(props: ElementProps<"button">) {
       "success",
       selectedFolders.length > 1 ? "Added workspaces" : "Added workspace"
     )
-  }, [userData?.workspaces])
+  }, [workspaces])
 
   return (
     <button {...props} onclick={handleClick}>

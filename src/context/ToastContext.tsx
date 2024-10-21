@@ -29,8 +29,11 @@ export const ToastProvider: Kaioken.FC = ({ children }) => {
   const [toasts, setToasts] = useState<Toast[]>([])
 
   useEffect(() => {
-    const interval = setInterval(() => {
-      if (toasts.length === 0) return
+    const timeout = setTimeout(() => {
+      if (toasts.length === 0) {
+        console.log("no toasts")
+        return
+      }
       setToasts((prev) =>
         prev.map((toast) => {
           if (toast.expired) {
@@ -43,8 +46,8 @@ export const ToastProvider: Kaioken.FC = ({ children }) => {
         })
       )
     }, 500)
-    return () => clearInterval(interval)
-  }, [])
+    return () => clearTimeout(timeout)
+  }, [toasts])
 
   const showToast = (
     type: Toast["type"],
@@ -76,6 +79,7 @@ export const ToastProvider: Kaioken.FC = ({ children }) => {
             onTransitionEnd={(state) => {
               if (state === "exited") {
                 setToasts((prev) => prev.filter((t) => t.ts !== toast.ts))
+                console.log("exited")
               }
             }}
             element={(state) => <ToastItem toast={toast} state={state} i={i} />}

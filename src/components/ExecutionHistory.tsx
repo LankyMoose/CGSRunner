@@ -1,21 +1,22 @@
 import { useUserData } from "../context/UserDataContext"
-import { UserData } from "../tauri/storage/userData"
+import { UserHistory } from "../tauri/storage/userData"
 import { ScriptJob } from "../types"
 
 export function ExecutionHistory() {
-  const { userData } = useUserData()
+  const { history } = useUserData()
   return (
     <div id="history" className="flex flex-col gap-2 p-2 glass-panel">
       <h1 className="text-2xl font-bold">History</h1>
-      {userData && <HistoryList history={userData.history} />}
+      {history && <HistoryList history={history} />}
     </div>
   )
 }
 
-function HistoryList({ history }: { history: UserData["history"] }) {
+function HistoryList({ history }: { history: UserHistory }) {
+  console.log("rendering HistoryList", history)
   return (
     <div className="flex flex-col gap-2">
-      {Object.entries(history).map(([ts, job]) => (
+      {Object.entries(history.history).map(([ts, job]) => (
         <JobDisplay key={ts} job={job} ts={ts} />
       ))}
     </div>
@@ -23,14 +24,13 @@ function HistoryList({ history }: { history: UserData["history"] }) {
 }
 
 function JobDisplay({ job, ts }: { job: ScriptJob; ts: string }) {
-  const { userData, setUserData, invalidate } = useUserData()
+  const { history, setHistory } = useUserData()
 
   const deleteJob = async () => {
-    if (!userData) return
-    const newHistory = { ...userData.history }
-    delete newHistory[ts]
-    await setUserData({ ...userData, history: newHistory })
-    invalidate()
+    if (!history) return
+    const newHistory = { ...history, history: { ...history.history } }
+    delete newHistory.history[ts]
+    await setHistory(newHistory)
   }
 
   return (
