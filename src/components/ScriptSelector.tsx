@@ -40,7 +40,7 @@ export function ScriptSelector() {
         {selectedScript.value?.path ?? "Select script"}
       </button>
 
-      {selectedScript.value && targets.length > 0 && (
+      {selectedScript.value && targets.value.length > 0 && (
         <button
           disabled={running}
           className="px-2 py-1 font-bold text-sm bg-success shadow bg-opacity-50 rounded border border-white border-opacity-10 hover:bg-opacity-100"

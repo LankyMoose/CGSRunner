@@ -7,7 +7,7 @@ import { useWorkspaces } from "../context/FileProviders"
 
 export function Packages() {
   const { data: workspaces } = useWorkspaces()
-  const { targets, setTargets } = useScriptJob()
+  const { targets } = useScriptJob()
   const {
     data: packages,
     loading,
@@ -19,16 +19,16 @@ export function Packages() {
       .flat()
       .filter((v, i, arr) => arr.indexOf(v) === i)
     console.log("PackagesList", res)
-    setTargets([])
+    targets.value = []
     return res
   }, [workspaces])
 
   const removePackage = (pkg: string) => {
-    setTargets(targets.filter((p) => p !== pkg))
+    targets.value = targets.value.filter((p) => p !== pkg)
   }
 
   const addPackage = (pkg: string) => {
-    setTargets([...targets, pkg])
+    targets.value = [...targets.value, pkg]
   }
 
   return (
@@ -52,7 +52,7 @@ export function Packages() {
       ) : (
         <PackagesList
           packages={packages}
-          selectedPackages={targets}
+          selectedPackages={targets.value}
           removePackage={removePackage}
           addPackage={addPackage}
         />

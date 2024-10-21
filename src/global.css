@@ -92,11 +92,8 @@ button:disabled {
   @apply fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 transition rounded;
   background: #1f1f2b;
   max-width: 90vw;
-  position: relative;
-}
-
-.modal-inner {
   max-height: 90vh;
+  overflow: hidden;
   overflow-y: auto;
 }
 
@@ -107,4 +104,9 @@ button:disabled {
 
 .modal-region {
   @apply p-2;
+}
+
+.modal-footer {
+  @apply sticky bottom-0 p-4;
+  background: #2c2c3f;
 }

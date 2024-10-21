@@ -3,7 +3,7 @@ import { useHistory } from "../context/FileProviders"
 import { UserHistory } from "../tauri/storage/userData"
 import { ScriptJob } from "../types"
 import { Modal } from "./Dialog/Modal"
-import { XIcon } from "./icons/icon-x"
+import { useScriptJob } from "../context/ScriptJobContext"
 
 export function ExecutionHistory() {
   const { data } = useHistory()
@@ -62,13 +62,27 @@ function JobDisplay({ job, ts }: { job: ScriptJob; ts: string }) {
         </button>
       </div>
       <Modal open={detailsOpen} setOpen={setDetailsOpen}>
-        <JobDetailsDisplay job={job} />
+        <JobDetailsDisplay job={job} setOpen={setDetailsOpen} />
       </Modal>
     </div>
   )
 }
 
-function JobDetailsDisplay({ job }: { job: ScriptJob }) {
+function JobDetailsDisplay({
+  job,
+  setOpen,
+}: {
+  job: ScriptJob
+  setOpen: (open: boolean) => void
+}) {
+  const { runJob, targets, running } = useScriptJob()
+  const rerun = async () => {
+    if (running) return
+    targets.value = Object.keys(job.targets)
+    runJob(job.script)
+    setOpen(false)
+  }
+
   return (
     <div className="flex flex-col gap-2 relative">
       <h1 className="text-2xl font-bold modal-region-heading">Details</h1>
@@ -91,6 +105,22 @@ function JobDetailsDisplay({ job }: { job: ScriptJob }) {
             </li>
           ))}
         </ul>
+      </div>
+      <div className="modal-footer">
+        <div className="flex justify-between">
+          <button
+            onclick={() => setOpen(false)}
+            className="px-2 py-1 bg-neutral-100 bg-opacity-15 hover:bg-opacity-25 rounded"
+          >
+            Close
+          </button>
+          <button
+            onclick={rerun}
+            className="px-2 py-1 bg-info rounded bg-opacity-50 hover:bg-opacity-100"
+          >
+            Run again?
+          </button>
+        </div>
       </div>
     </div>
   )
