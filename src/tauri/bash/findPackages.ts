@@ -1,4 +1,4 @@
-import { run } from "./run"
+import { runBash } from "./run"
 
 export async function findPackages(baseDir: string): Promise<string[]> {
   // List of directories to exclude
@@ -18,11 +18,12 @@ export async function findPackages(baseDir: string): Promise<string[]> {
   // Final find command
   const command = `find ${baseDir} \\( ${pruneExpression} \\) -prune -o -name package.json -print`
 
-  const result = await run(command, { cwd: baseDir })
+  const result = await runBash(command, { cwd: baseDir })
 
   // Filter out empty lines and trim results
   return result.stdout
     .split("\n")
     .map((line) => line.trim())
     .filter(Boolean)
+    .map((line) => line.substring(0, line.lastIndexOf("/")))
 }

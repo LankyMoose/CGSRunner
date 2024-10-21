@@ -11,7 +11,7 @@ import {
 
 type Toast = {
   ts: number
-  type: "info" | "success" | "warning" | "error"
+  type: "info" | "success" | "warning" | "danger"
   message: string
   expires: number
   expired?: boolean
@@ -25,11 +25,12 @@ const ToastContext = createContext<{
 
 export const useToast = () => useContext(ToastContext)
 
-export const ToastContextProvider: Kaioken.FC = ({ children }) => {
+export const ToastProvider: Kaioken.FC = ({ children }) => {
   const [toasts, setToasts] = useState<Toast[]>([])
 
   useEffect(() => {
     const interval = setInterval(() => {
+      if (toasts.length === 0) return
       setToasts((prev) =>
         prev.map((toast) => {
           if (toast.expired) {

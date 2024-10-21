@@ -70,8 +70,8 @@ main #script-selector {
   @apply bg-warning;
 }
 
-.toast.toast-error {
-  @apply bg-error;
+.toast.toast-danger {
+  @apply bg-danger;
 }
 
 .badge {

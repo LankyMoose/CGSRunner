@@ -1,12 +1,24 @@
-import { useSignal } from "kaioken"
-import { selectedPackages } from "../state"
-import { openScriptSelectorDialog } from "../tauri/dialog"
+import { useRef, useSignal } from "kaioken"
+import { ScriptSelection } from "../types"
+import { useScriptJob } from "../context/ScriptJobContext"
 
 export function ScriptSelector() {
-  const selectedFile = useSignal<string | null>(null)
+  const { runJob, running, targets } = useScriptJob()
+  const selectedScript = useSignal<ScriptSelection | null>(null)
+  const inputRef = useRef<HTMLInputElement | null>(null)
 
-  const handleSelectFile = async () => {
-    selectedFile.value = await openScriptSelectorDialog()
+  const handleSelectFile = async (e: Event) => {
+    const target = e.target as HTMLInputElement
+    if (!target.files) return
+    const file = target.files[0]
+    const text = await file.text()
+    selectedScript.value = { path: file.name, contents: text }
+  }
+
+  const handleRun = async () => {
+    if (!selectedScript.value) return
+    if (running) return
+    runJob(selectedScript.value)
   }
 
   return (
@@ -14,19 +26,25 @@ export function ScriptSelector() {
       id="script-selector"
       className="flex gap-2 p-2 items-center justify-between glass-panel"
     >
+      <input
+        accept=".sh"
+        className="hidden"
+        type="file"
+        ref={inputRef}
+        onchange={handleSelectFile}
+      />
       <button
         className="px-2 py-1 font-bold glass-panel max-w-60 truncate text-sm hover:bg-opacity-15"
-        onclick={handleSelectFile}
+        onclick={() => inputRef.current?.click()}
       >
-        {selectedFile.value ?? "Select script"}
+        {selectedScript.value?.path ?? "Select script"}
       </button>
 
-      {selectedFile.value && selectedPackages.value.length > 0 && (
+      {selectedScript.value && targets.length > 0 && (
         <button
+          disabled={running}
           className="px-2 py-1 font-bold text-sm bg-success shadow bg-opacity-50 rounded border border-white border-opacity-10 hover:bg-opacity-100"
-          onclick={() => {
-            console.log(selectedFile.value)
-          }}
+          onclick={handleRun}
         >
           Run script on selected packages
         </button>

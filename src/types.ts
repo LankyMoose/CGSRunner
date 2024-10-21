@@ -6,7 +6,7 @@ export type ScriptSelection = {
 export type ScriptJobResult = {
   stdout: string
   stderr: string
-  code?: number
+  code: number | null
 }
 
 export interface ScriptJob {

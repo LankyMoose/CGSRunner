@@ -1,24 +1,27 @@
 import { UserDataProvider } from "./context/UserDataContext"
-import { ToastContextProvider } from "./context/ToastContext"
+import { ToastProvider } from "./context/ToastContext"
 import { Workspaces } from "./components/Workspaces"
 import { Packages } from "./components/Packages"
 import { ExecutionHistory } from "./components/ExecutionHistory"
 import { ScriptSelector } from "./components/ScriptSelector"
+import { ScriptJobProvider } from "./context/ScriptJobContext"
 
 export function App() {
   return (
     <>
       <UserDataProvider>
-        <ToastContextProvider>
-          <header>
-            <Workspaces />
-          </header>
-          <main>
-            <Packages />
-            <ExecutionHistory />
-            <ScriptSelector />
-          </main>
-        </ToastContextProvider>
+        <ToastProvider>
+          <ScriptJobProvider>
+            <header>
+              <Workspaces />
+            </header>
+            <main>
+              <Packages />
+              <ExecutionHistory />
+              <ScriptSelector />
+            </main>
+          </ScriptJobProvider>
+        </ToastProvider>
       </UserDataProvider>
     </>
   )

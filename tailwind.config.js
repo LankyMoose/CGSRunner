@@ -9,7 +9,7 @@ export default {
         info: "#4f46e5",
         success: "#267d46",
         warning: "#a46319",
-        error: "#963030",
+        danger: "#963030",
       },
     },
   },
