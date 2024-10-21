@@ -62,46 +62,36 @@ function JobDisplay({ job, ts }: { job: ScriptJob; ts: string }) {
         </button>
       </div>
       <Modal open={detailsOpen} setOpen={setDetailsOpen}>
-        <JobDetailsDisplay job={job} setOpen={setDetailsOpen} />
+        <JobDetailsDisplay job={job} />
       </Modal>
     </div>
   )
 }
 
-function JobDetailsDisplay({
-  job,
-  setOpen,
-}: {
-  job: ScriptJob
-  setOpen: (open: boolean) => void
-}) {
+function JobDetailsDisplay({ job }: { job: ScriptJob }) {
   return (
-    <div className="flex flex-col gap-2">
-      <h1 className="text-2xl font-bold flex justify-between">
-        Details
-        <button
-          onclick={() => setOpen(false)}
-          className="opacity-50 hover:opacity-100"
-        >
-          <XIcon />
-        </button>
-      </h1>
-      <pre className="p-2 bg-black bg-opacity-30 rounded text-xs">
-        {job.script.contents}
-      </pre>
-      <h1 className="text-2xl font-bold">Targets</h1>
-      <ul className="flex flex-col gap-2">
-        {Object.entries(job.targets).map(([pkg, res]) => (
-          <li key={pkg} className="bg-black bg-opacity-30 rounded">
-            <h2 className="font-bold px-2 py-1">
-              {">"} {pkg}
-            </h2>
-            <div className="max-w-full overflow-auto text-xs p-2 bg-black bg-opacity-20">
-              <pre>{res.result?.stdout}</pre>
-            </div>
-          </li>
-        ))}
-      </ul>
+    <div className="flex flex-col gap-2 relative">
+      <h1 className="text-2xl font-bold modal-region-heading">Details</h1>
+      <div className="modal-region">
+        <pre className="p-2 bg-black bg-opacity-30 rounded text-xs">
+          {job.script.contents}
+        </pre>
+      </div>
+      <h1 className="text-2xl font-bold modal-region-heading">Targets</h1>
+      <div className="modal-region">
+        <ul className="flex flex-col gap-2">
+          {Object.entries(job.targets).map(([pkg, res]) => (
+            <li key={pkg} className="bg-black bg-opacity-30 rounded">
+              <h2 className="font-bold px-2 py-1">
+                {">"} {pkg}
+              </h2>
+              <div className="max-w-full overflow-auto text-xs p-2 bg-black bg-opacity-20">
+                <pre>{res.result?.stdout}</pre>
+              </div>
+            </li>
+          ))}
+        </ul>
+      </div>
     </div>
   )
 }

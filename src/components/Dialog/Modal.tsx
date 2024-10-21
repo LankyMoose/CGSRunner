@@ -5,6 +5,7 @@ import {
   useRef,
   type TransitionState,
 } from "kaioken"
+import { XIcon } from "../icons/icon-x"
 
 export function Modal({
   open,
@@ -53,7 +54,13 @@ function ModalDisplay({ state, close, children }: ModalProps) {
           transform: `translate(-50%, ${translateY}%) scale(${scale})`,
         }}
       >
-        {children}
+        <div className="modal-inner">{children}</div>
+        <button
+          onclick={() => close()}
+          className="opacity-50 hover:opacity-100 absolute top-2 right-4 z-50"
+        >
+          <XIcon />
+        </button>
       </div>
     </Backdrop>
   )

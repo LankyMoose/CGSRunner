@@ -89,9 +89,22 @@ button:disabled {
 }
 
 .modal {
-  @apply fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 p-2 transition rounded;
+  @apply fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 transition rounded;
   background: #1f1f2b;
   max-width: 90vw;
+  position: relative;
+}
+
+.modal-inner {
   max-height: 90vh;
   overflow-y: auto;
+}
+
+.modal-region-heading {
+  @apply sticky top-0 p-2;
+  background: #1f1f2b;
+}
+
+.modal-region {
+  @apply p-2;
 }
