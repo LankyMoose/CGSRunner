@@ -4,7 +4,7 @@ import { Packages } from "./components/Packages"
 import { ExecutionHistory } from "./components/ExecutionHistory"
 import { ScriptSelector } from "./components/ScriptSelector"
 import { ScriptJobProvider } from "./context/ScriptJobContext"
-import { useAsync, useEffect } from "kaioken"
+import { useAsync } from "kaioken"
 import { loadWorkspaces, useWorkspaces } from "./stores/workspaces"
 import { loadHistory, useHistory } from "./stores/history"
 
