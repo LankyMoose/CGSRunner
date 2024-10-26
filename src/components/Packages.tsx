@@ -3,10 +3,10 @@ import { findPackages } from "../tauri/bash/findPackages"
 import { FolderIcon } from "./icons/icon-folder"
 import { RefreshIcon } from "./icons/icon-refresh"
 import { useScriptJob } from "../context/ScriptJobContext"
-import { useWorkspaces } from "../context/FileProviders"
+import { useWorkspaces } from "../stores/workspaces"
 
 export function Packages() {
-  const { data: workspaces } = useWorkspaces()
+  const { value: workspaces } = useWorkspaces()
   const { targets } = useScriptJob()
   const {
     data: packages,

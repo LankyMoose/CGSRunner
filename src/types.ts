@@ -9,7 +9,8 @@ export type ScriptJobResult = {
   code: number | null
 }
 
-export interface ScriptJob {
+export type ScriptJob = {
   script: ScriptSelection
-  targets: Record<string, { result?: ScriptJobResult }>
+  targets: Record<string, { result?: ScriptJobResult; error?: string }>
+  completed?: boolean
 }

@@ -4,7 +4,7 @@ import { useToast } from "../context/ToastContext"
 import { openFolderSelectorDialog } from "../tauri/dialog"
 import { CirclePlusIcon } from "./icons/icon-circle-plus"
 import { CircleXIcon } from "./icons/icon-circle-x"
-import { useWorkspaces } from "../context/FileProviders"
+import { useWorkspaces } from "../stores/workspaces"
 
 export function Workspaces() {
   return (
@@ -17,7 +17,7 @@ export function Workspaces() {
 
 function WorkspacesList({ className = "", ...props }: ElementProps<"ul">) {
   const showToast = useToast()
-  const { data, setData } = useWorkspaces()
+  const { value: data, setData } = useWorkspaces()
 
   const handleRemoveClick = async (dir: string) => {
     if (!data) return
@@ -70,7 +70,7 @@ function WorkspacesList({ className = "", ...props }: ElementProps<"ul">) {
 
 function AddWorkspaceButton(props: ElementProps<"button">) {
   const showToast = useToast()
-  const { data, setData } = useWorkspaces()
+  const { value: data, setData } = useWorkspaces()
 
   const handleClick = useCallback(async () => {
     const selectedFolders = await openFolderSelectorDialog()

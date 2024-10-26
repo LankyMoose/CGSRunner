@@ -26,5 +26,11 @@ export default defineConfig({
     // produce sourcemaps for debug builds
     sourcemap: !!process.env.TAURI_DEBUG,
   },
+  esbuild: {
+    sourcemap: false,
+    supported: {
+      "top-level-await": true, //browsers can handle top-level-await features
+    },
+  },
   plugins: [kaioken()],
 })

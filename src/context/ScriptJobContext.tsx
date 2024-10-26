@@ -1,8 +1,7 @@
 import { createContext, Signal, useContext, useSignal, useState } from "kaioken"
 import { ScriptJob, ScriptSelection } from "../types"
 import { runBash } from "../tauri/bash/run"
-import { useToast } from "./ToastContext"
-import { useHistory } from "./FileProviders"
+import { useHistory } from "../stores/history"
 
 type ScriptJobCtx = {
   targets: Signal<string[]>
@@ -15,8 +14,8 @@ const ScriptJobContext = createContext<ScriptJobCtx>(null as any)
 export const useScriptJob = () => useContext(ScriptJobContext)
 
 export const ScriptJobProvider: Kaioken.FC = ({ children }) => {
-  const showToast = useToast()
-  const { data, setData } = useHistory()
+  //const showToast = useToast()
+  const { value: data, setData } = useHistory()
   const [running, setRunning] = useState(false)
   const targets = useSignal<string[]>([])
 
@@ -24,24 +23,34 @@ export const ScriptJobProvider: Kaioken.FC = ({ children }) => {
     if (running) return
     if (!data) return
     setRunning(true)
+    const ts = Date.now()
     const job: ScriptJob = {
       script,
-      targets: {},
+      targets: targets.value.reduce((acc, pkg) => {
+        acc[pkg] = {}
+        return acc
+      }, {} as ScriptJob["targets"]),
     }
-    const ts = Date.now()
+    await setData({ ...data, history: { ...data.history, [ts]: job } })
 
-    try {
-      for await (const pkg of targets.value) {
-        const res = await runBash(job.script.contents, { cwd: pkg })
-        job.targets[pkg] = { result: res }
-      }
-      await setData({
-        ...data,
-        history: { ...data.history, [ts]: job },
+    await Promise.allSettled(
+      targets.value.map(async (pkg) => {
+        try {
+          const result = await runBash(job.script.contents, { cwd: pkg })
+          job.targets[pkg] = { ...job.targets[pkg], result }
+        } catch (error) {
+          job.targets[pkg] = { ...job.targets[pkg], error: String(error) }
+        } finally {
+          setData({ ...data, history: { ...data.history, [ts]: { ...job } } })
+        }
       })
-    } catch (error) {
-      showToast("danger", String(error))
-    }
+    )
+
+    job.completed = true
+    await setData({
+      ...data,
+      history: { ...data.history, [ts]: { ...job } },
+    })
     setRunning(false)
   }
   return (
