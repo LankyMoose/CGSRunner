@@ -1,10 +1,10 @@
 import { useEffect, useSignal } from "kaioken"
-import { createFindPackagesRunner } from "../tauri/bash/findPackages"
+import { createFindPackagesRunner } from "../tauri/shell/findPackages"
 import { FolderIcon } from "./icons/icon-folder"
 import { RefreshIcon } from "./icons/icon-refresh"
 import { useScriptJob } from "../context/ScriptJobContext"
 import { useWorkspaces } from "../stores/workspaces"
-import { ShellRunner } from "../tauri/shell"
+import { ShellRunner } from "../tauri/shell/runner"
 
 export function Packages() {
   const { value: workspaces } = useWorkspaces()
