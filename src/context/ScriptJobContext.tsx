@@ -1,11 +1,10 @@
-import { createContext, Signal, useContext, useSignal, useState } from "kaioken"
+import { createContext, Signal, useContext, useSignal } from "kaioken"
 import { ScriptJob, ScriptSelection } from "../types"
 import { runBash } from "../tauri/bash/run"
 import { useHistory } from "../stores/history"
 
 type ScriptJobCtx = {
   targets: Signal<string[]>
-  running: boolean
   runJob: (script: ScriptSelection) => Promise<void>
 }
 
@@ -16,14 +15,11 @@ export const useScriptJob = () => useContext(ScriptJobContext)
 export const ScriptJobProvider: Kaioken.FC = ({ children }) => {
   //const showToast = useToast()
   const { value: data, setData } = useHistory()
-  const [running, setRunning] = useState(false)
   const targets = useSignal<string[]>([])
 
   const runJob = async (script: ScriptSelection) => {
-    if (running) return
     if (!data) return
-    setRunning(true)
-    const ts = Date.now()
+    const ts = performance.now()
     const job: ScriptJob = {
       script,
       targets: targets.value.reduce((acc, pkg) => {
@@ -51,13 +47,11 @@ export const ScriptJobProvider: Kaioken.FC = ({ children }) => {
       ...data,
       history: { ...data.history, [ts]: { ...job } },
     })
-    setRunning(false)
   }
   return (
     <ScriptJobContext.Provider
       value={{
         runJob,
-        running,
         targets,
       }}
     >

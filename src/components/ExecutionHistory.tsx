@@ -1,9 +1,9 @@
 import { useCallback, useState } from "kaioken"
 import { ScriptJob } from "../types"
-import { MaximizeIcon } from "./icons/icon-maximize"
 import { Spinner } from "./Spinner"
 import { Modal } from "./Dialog/Modal"
 import { useHistory } from "../stores/history"
+import { TrashIcon } from "./icons/icon-trash"
 
 export function ExecutionHistory() {
   return (
@@ -27,22 +27,36 @@ function HistoryList() {
   return (
     <div className="flex flex-col gap-2 max-h-[calc(100vh-170px)] overflow-y-auto">
       {Object.entries(value.history).map(([ts, job]) => (
-        <JobDisplay key={ts} job={job} ts={ts} />
+        <JobDisplay key={`job-${ts}`} job={job} ts={ts} />
       ))}
     </div>
   )
 }
 
 function JobDisplay({ job, ts }: { job: ScriptJob; ts: string }) {
+  const { value: data, setData } = useHistory()
   const [detailsOpen, setDetailsOpen] = useState(false)
 
   const handleMaximizeClick = useCallback(() => {
     setDetailsOpen((prev) => !prev)
   }, [])
 
+  const deleteJob = useCallback(
+    async (e: Event) => {
+      e.stopPropagation()
+      e.preventDefault()
+      if (!data) return
+      const newHistory = { ...data, history: { ...data.history } }
+      delete newHistory.history[ts]
+      await setData(newHistory)
+    },
+    [data]
+  )
+
   return (
-    <div
-      className={`p-1 rounded border border-neutral-400 border-opacity-5 relative ${
+    <button
+      onclick={handleMaximizeClick}
+      className={`p-1 rounded border border-neutral-400 border-opacity-5 opacity-85 hover:opacity-100 relative ${
         job.completed
           ? "bg-neutral-400 bg-opacity-5"
           : "bg-warning bg-opacity-50"
@@ -51,12 +65,14 @@ function JobDisplay({ job, ts }: { job: ScriptJob; ts: string }) {
       <div className="flex flex-col gap-2">
         <div className="flex items-center justify-between">
           <span className="text-sm font-bold">{job.script.path}</span>
-          <button
-            onclick={handleMaximizeClick}
-            className="w-6 h-6 flex items-center justify-center opacity-50 hover:opacity-100"
-          >
-            <MaximizeIcon width="0.75rem" />
-          </button>
+          <div className="flex gap-1 items-center">
+            <button
+              onclick={deleteJob}
+              className={`w-6 h-6 flex items-center justify-center opacity-50 hover:opacity-100 hover:text-red-500`}
+            >
+              <TrashIcon width="0.75rem" />
+            </button>
+          </div>
         </div>
         <div className="flex flex-col gap-1 ">
           {Object.keys(job.targets).map((pkg) => (
@@ -65,9 +81,9 @@ function JobDisplay({ job, ts }: { job: ScriptJob; ts: string }) {
         </div>
       </div>
       <Modal open={detailsOpen} setOpen={setDetailsOpen}>
-        <JobDetailsDisplay job={job} ts={ts} setOpen={setDetailsOpen} />
+        <JobDetailsDisplay job={job} setOpen={setDetailsOpen} />
       </Modal>
-    </div>
+    </button>
   )
 }
 
@@ -100,20 +116,10 @@ function JobTargetDisplay({ jobTs, targetName }: JobTargetDisplayProps) {
 function JobDetailsDisplay({
   job,
   setOpen,
-  ts,
 }: {
   job: ScriptJob
   setOpen: (open: boolean) => void
-  ts: string
 }) {
-  const { value: data, setData } = useHistory()
-  const deleteJob = useCallback(async () => {
-    if (!data) return
-    const newHistory = { ...data, history: { ...data.history } }
-    delete newHistory.history[ts]
-    await setData(newHistory)
-  }, [data])
-
   return (
     <div className="flex flex-col gap-2 relative">
       <h1 className="text-2xl font-bold modal-region-heading">Details</h1>
@@ -138,22 +144,12 @@ function JobDetailsDisplay({
         </ul>
       </div>
       <div className="modal-footer">
-        <div className="flex justify-between">
-          <button
-            onclick={() => setOpen(false)}
-            className="px-2 py-1 bg-neutral-100 bg-opacity-15 hover:bg-opacity-25 rounded"
-          >
-            Close
-          </button>
-          <div>
-            <button
-              onclick={deleteJob}
-              className="px-2 py-1 bg-danger rounded bg-opacity-50 hover:bg-opacity-100"
-            >
-              Delete
-            </button>
-          </div>
-        </div>
+        <button
+          onclick={() => setOpen(false)}
+          className="px-2 py-1 bg-neutral-100 bg-opacity-15 hover:bg-opacity-25 rounded"
+        >
+          Close
+        </button>
       </div>
     </div>
   )

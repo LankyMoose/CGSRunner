@@ -3,7 +3,7 @@ import { ScriptSelection } from "../types"
 import { useScriptJob } from "../context/ScriptJobContext"
 
 export function ScriptSelector() {
-  const { runJob, running, targets } = useScriptJob()
+  const { runJob, targets } = useScriptJob()
   const selectedScript = useSignal<ScriptSelection | null>(null)
   const inputRef = useRef<HTMLInputElement | null>(null)
 
@@ -17,7 +17,6 @@ export function ScriptSelector() {
 
   const handleRun = async () => {
     if (!selectedScript.value) return
-    if (running) return
     runJob(selectedScript.value)
   }
 
@@ -42,7 +41,6 @@ export function ScriptSelector() {
 
       {selectedScript.value && targets.value.length > 0 && (
         <button
-          disabled={running}
           className="px-2 py-1 font-bold text-sm bg-success shadow bg-opacity-50 rounded border border-white border-opacity-10 hover:bg-opacity-100"
           onclick={handleRun}
         >
