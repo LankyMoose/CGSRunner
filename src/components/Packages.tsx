@@ -4,7 +4,7 @@ import { FolderIcon } from "./icons/icon-folder"
 import { RefreshIcon } from "./icons/icon-refresh"
 import { useScriptJob } from "../context/ScriptJobContext"
 import { useWorkspaces } from "../stores/workspaces"
-import { ShellRunner } from "../tauri/shell/runner"
+import { ShellRunner } from "../tauri/shell/shellRunner"
 
 export function Packages() {
   const { value: workspaces } = useWorkspaces()

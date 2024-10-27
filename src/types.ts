@@ -11,6 +11,5 @@ export type ScriptJobResult = {
 
 export type ScriptJob = {
   script: ScriptSelection
-  targets: Record<string, { result?: ScriptJobResult; error?: string }>
-  completed?: boolean
+  targets: Record<string, ScriptJobResult>
 }

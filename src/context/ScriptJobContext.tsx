@@ -1,7 +1,7 @@
 import { createContext, Signal, useContext, useSignal } from "kaioken"
 import { ScriptJob, ScriptSelection } from "../types"
-import { runSh } from "../tauri/shell/run"
 import { useHistory } from "../stores/history"
+import { ShellRunner } from "../tauri/shell/shellRunner"
 
 type ScriptJobCtx = {
   targets: Signal<string[]>
@@ -23,7 +23,7 @@ export const ScriptJobProvider: Kaioken.FC = ({ children }) => {
     const job: ScriptJob = {
       script,
       targets: jobTargets.reduce((acc, pkg) => {
-        acc[pkg] = {}
+        acc[pkg] = { code: null, stderr: "", stdout: "" }
         return acc
       }, {} as ScriptJob["targets"]),
     }
@@ -33,26 +33,45 @@ export const ScriptJobProvider: Kaioken.FC = ({ children }) => {
     }))
 
     await Promise.allSettled(
-      jobTargets.map(async (pkg) => {
-        try {
-          const result = await runSh(job.script.contents, { cwd: pkg })
-          job.targets[pkg] = { ...job.targets[pkg], result }
-        } catch (error) {
-          job.targets[pkg] = { ...job.targets[pkg], error: String(error) }
-        } finally {
-          await setData((prev) => ({
+      jobTargets.map((pkg) => {
+        const result = job.targets[pkg]
+        const update = () =>
+          setData((prev) => ({
             ...prev,
-            history: { ...prev.history, [id]: { ...job } },
+            history: {
+              ...prev.history,
+              [id]: {
+                ...job,
+                targets: {
+                  ...job.targets,
+                  [pkg]: result,
+                },
+              },
+            },
           }))
-        }
+
+        return new Promise<void>((resolve) => {
+          const runner = new ShellRunner(job.script.contents, {
+            spawnOpts: { cwd: pkg },
+            onData(data) {
+              result.stdout += data
+              update()
+            },
+            onError(data) {
+              result.stderr += data
+              update()
+            },
+            onEnd(data) {
+              result.code = data.code
+              update()
+              resolve()
+            },
+          })
+
+          runner.start()
+        })
       })
     )
-
-    job.completed = true
-    await setData((prev) => ({
-      ...prev,
-      history: { ...prev.history, [id]: { ...job } },
-    }))
   }
   return (
     <ScriptJobContext.Provider value={{ runJob, targets }}>

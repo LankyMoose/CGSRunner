@@ -7,7 +7,7 @@ import {
 
 export type ShellRunnerOptions = {
   onData?: (data: string) => void
-  onEnd?: () => void
+  onEnd?: (data: TerminatedPayload) => void
   onError?: (data: string) => void
   spawnOpts?: SpawnOptions
 }
@@ -36,7 +36,7 @@ export class ShellRunner {
       this.terminatedPayload = data
       this.completed = true
       this.childHandle = undefined
-      opts?.onEnd?.()
+      opts?.onEnd?.(data)
     })
   }
 

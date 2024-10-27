@@ -35,7 +35,7 @@ function HistoryList() {
 }
 
 function JobDisplay({ job, ts }: { job: ScriptJob; ts: string }) {
-  const { setData } = useHistory()
+  const { setData } = useHistory(null, () => true)
   const [detailsOpen, setDetailsOpen] = useState(false)
 
   const handleMaximizeClick = useCallback(() => {
@@ -58,11 +58,7 @@ function JobDisplay({ job, ts }: { job: ScriptJob; ts: string }) {
   return (
     <button
       onclick={handleMaximizeClick}
-      className={`p-1 rounded border border-neutral-400 border-opacity-5 opacity-85 hover:opacity-100 relative ${
-        job.completed
-          ? "bg-neutral-400 bg-opacity-5"
-          : "bg-warning bg-opacity-50"
-      }`}
+      className={`p-1 rounded border border-neutral-400 border-opacity-5 opacity-85 hover:opacity-100 relative bg-neutral-400 bg-opacity-5`}
     >
       <div className="flex flex-col gap-2">
         <div className="flex items-center justify-between">
@@ -103,14 +99,18 @@ function JobTargetDisplay({ jobTs, targetName }: JobTargetDisplayProps) {
   return (
     <div
       className={`flex justify-between gap-1 p-1 rounded bg-opacity-30 ${
-        tgt.error ? "bg-danger" : tgt.result ? "bg-success" : "bg-warning"
+        tgt.code === null
+          ? "bg-warning"
+          : tgt.stderr
+          ? "bg-danger"
+          : "bg-success"
       }`}
     >
       <span className="truncate text-xs">
         {"> "}
         {targetName}
       </span>
-      {!tgt.error && !tgt.result && <Spinner width="1rem" />}
+      {tgt.code === null && <Spinner width="1rem" />}
     </div>
   )
 }
@@ -139,7 +139,7 @@ function JobDetailsDisplay({
                 {">"} {pkg}
               </h2>
               <div className="max-w-full overflow-auto text-xs p-2 bg-black bg-opacity-20">
-                <pre>{res.result?.stdout}</pre>
+                <pre>{res.stdout}</pre>
               </div>
             </li>
           ))}

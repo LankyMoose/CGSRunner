@@ -1,4 +1,4 @@
-import { ShellRunner, ShellRunnerOptions } from "../shell/runner"
+import { ShellRunner, ShellRunnerOptions } from "../shell/shellRunner"
 
 const excludedDirs = [
   "node_modules",
