@@ -1,29 +1,31 @@
-import { runBash } from "./run"
+import { ShellRunner, ShellRunnerOptions } from "../shell"
 
-export async function findPackages(baseDir: string): Promise<string[]> {
-  // List of directories to exclude
-  const excludedDirs = [
-    "node_modules",
-    "dist",
-    "build",
-    ".git",
-    "coverage",
-    "tmp",
-    ".cache",
-  ]
+const excludedDirs = [
+  "node_modules",
+  "dist",
+  "build",
+  ".git",
+  "coverage",
+  "tmp",
+  ".cache",
+  "System Volume Information",
+]
 
-  // Construct the prune expression from the excludedDirs array
-  const pruneExpression = excludedDirs.map((dir) => `-name ${dir}`).join(" -o ")
+const pruneExpression = excludedDirs.map((dir) => `-name '${dir}'`).join(" -o ")
 
+export function createFindPackagesRunner(
+  baseDir: string,
+  options?: ShellRunnerOptions
+): ShellRunner {
   // Final find command
-  const command = `find ${baseDir} \\( ${pruneExpression} \\) -prune -o -name package.json -print`
+  const command = `find ${baseDir} \\( ${pruneExpression} \\) -prune -o -name 'package.json' -print`
 
-  const result = await runBash(command, { cwd: baseDir })
-
-  // Filter out empty lines and trim results
-  return result.stdout
-    .split("\n")
-    .map((line) => line.trim())
-    .filter(Boolean)
-    .map((line) => line.substring(0, line.lastIndexOf("/")))
+  const _options: ShellRunnerOptions = {
+    ...options,
+    spawnOpts: {
+      ...options?.spawnOpts,
+      cwd: baseDir,
+    },
+  }
+  return new ShellRunner(command, _options)
 }

@@ -1,27 +1,47 @@
-import { useAsync } from "kaioken"
-import { findPackages } from "../tauri/bash/findPackages"
+import { useEffect, useSignal } from "kaioken"
+import { createFindPackagesRunner } from "../tauri/bash/findPackages"
 import { FolderIcon } from "./icons/icon-folder"
 import { RefreshIcon } from "./icons/icon-refresh"
 import { useScriptJob } from "../context/ScriptJobContext"
 import { useWorkspaces } from "../stores/workspaces"
+import { ShellRunner } from "../tauri/shell"
 
 export function Packages() {
   const { value: workspaces } = useWorkspaces()
   const { targets } = useScriptJob()
-  const {
-    data: packages,
-    loading,
-    error,
-    invalidate,
-  } = useAsync(async () => {
-    if (!workspaces) return []
-    const res = (await Promise.all(workspaces.workspaces.map(findPackages)))
-      .flat()
-      .filter((v, i, arr) => arr.indexOf(v) === i)
-    console.log("PackagesList", res)
-    targets.value = []
-    return res
-  }, [workspaces])
+  const packages = useSignal<string[]>([])
+  const reloadSig = useSignal(0)
+  const loading = useSignal(false)
+
+  useEffect(() => {
+    loading.value = (workspaces?.workspaces || []).length > 0
+    packages.value = []
+    if (workspaces?.workspaces) {
+      const runners: ShellRunner[] = []
+      for (const dir of workspaces.workspaces) {
+        const runner = createFindPackagesRunner(dir, {
+          onData(data) {
+            packages.value.push(
+              data.trimEnd().substring(0, data.lastIndexOf("/"))
+            )
+            packages.value = [...new Set(packages.value)]
+          },
+          onEnd() {
+            if (
+              runners.length === workspaces.workspaces.length &&
+              runners.every((r) => r.completed)
+            ) {
+              loading.value = false
+            }
+          },
+        })
+        runner.start()
+        runners.push(runner)
+      }
+      console.log(`runners`, runners)
+      return () => runners.forEach((r) => r.cancel())
+    }
+  }, [workspaces?.workspaces.length, reloadSig.value])
 
   const removePackage = (pkg: string) => {
     targets.value = targets.value.filter((p) => p !== pkg)
@@ -31,32 +51,37 @@ export function Packages() {
     targets.value = [...targets.value, pkg]
   }
 
+  const reload = () => {
+    reloadSig.value++
+    packages.value = []
+  }
+
   return (
     <div id="packages" className="flex flex-col gap-2 p-2 h-full glass-panel">
       <div className="flex justify-between">
         <div className="flex gap-2 items-start">
           <h1 className="text-2xl font-bold">Packages</h1>
-          {packages && <small className="badge">({packages.length})</small>}
+          {packages && (
+            <small className="badge">({packages.value.length})</small>
+          )}
         </div>
         <button
-          className="flex items-center opacity-50 hover:opacity-100"
-          onclick={invalidate}
+          className={`flex items-center opacity-50 hover:opacity-100 ${
+            loading.value ? "animate-spin" : ""
+          }`}
+          onclick={reload}
+          disabled={loading}
+          title={loading.value ? "Loading..." : "Reload"}
         >
           <RefreshIcon />
         </button>
       </div>
-      {loading ? (
-        <p>Searching...</p>
-      ) : error ? (
-        <p>Error: {error.message}</p>
-      ) : (
-        <PackagesList
-          packages={packages}
-          selectedPackages={targets.value}
-          removePackage={removePackage}
-          addPackage={addPackage}
-        />
-      )}
+      <PackagesList
+        packages={packages.value}
+        selectedPackages={targets.value}
+        removePackage={removePackage}
+        addPackage={addPackage}
+      />
     </div>
   )
 }
@@ -76,11 +101,6 @@ function PackagesList({
     <div
       className={`flex flex-col gap-1 max-h-[calc(100vh-234px)] overflow-y-auto`}
     >
-      {packages.length === 0 && (
-        <p>
-          <i>No packages found</i>
-        </p>
-      )}
       {packages.map((pkg) => (
         <button
           key={pkg}

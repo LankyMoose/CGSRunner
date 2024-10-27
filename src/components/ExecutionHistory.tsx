@@ -18,7 +18,8 @@ function HistoryList() {
   const { value } = useHistory(
     null,
     (prev, next) =>
-      Object.keys(prev || {}).length === Object.keys(next || {}).length
+      Object.keys(prev?.history || {}).length ===
+      Object.keys(next?.history || {}).length
   )
   if (value === null) return <div>Loading...</div>
 

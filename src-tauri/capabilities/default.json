@@ -21,6 +21,26 @@
     "fs:allow-desktop-write",
     "fs:default",
     "dialog:default",
-    "core:window:allow-set-min-size"
+    "core:window:allow-set-min-size",
+    {
+      "identifier": "shell:allow-spawn",
+      "allow": [
+        {
+          "name": "exec-sh",
+          "cmd": "sh",
+          "args": true
+        }
+      ]
+    },
+    {
+      "identifier": "shell:allow-kill",
+      "allow": [
+        {
+          "name": "exec-sh",
+          "cmd": "sh",
+          "args": true
+        }
+      ]
+    }
   ]
 }
