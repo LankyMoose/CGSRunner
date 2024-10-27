@@ -4,6 +4,7 @@ import { Spinner } from "./Spinner"
 import { Modal } from "./Dialog/Modal"
 import { useHistory } from "../stores/history"
 import { TrashIcon } from "./icons/icon-trash"
+import { UserHistory } from "../tauri/storage/userData"
 
 export function ExecutionHistory() {
   return (
@@ -34,24 +35,25 @@ function HistoryList() {
 }
 
 function JobDisplay({ job, ts }: { job: ScriptJob; ts: string }) {
-  const { value: data, setData } = useHistory()
+  const { setData } = useHistory()
   const [detailsOpen, setDetailsOpen] = useState(false)
 
   const handleMaximizeClick = useCallback(() => {
     setDetailsOpen((prev) => !prev)
   }, [])
 
-  const deleteJob = useCallback(
-    async (e: Event) => {
-      e.stopPropagation()
-      e.preventDefault()
-      if (!data) return
-      const newHistory = { ...data, history: { ...data.history } }
-      delete newHistory.history[ts]
-      await setData(newHistory)
-    },
-    [data]
-  )
+  const deleteJob = useCallback(async (e: Event) => {
+    e.stopPropagation()
+    e.preventDefault()
+    ;(e.target as HTMLButtonElement).style.pointerEvents = "none"
+    await setData((prev) => ({
+      ...prev,
+      history: Object.keys(prev.history).reduce((acc, _ts) => {
+        if (_ts === ts) return acc
+        return { ...acc, [_ts]: prev.history[_ts] }
+      }, {} as UserHistory["history"]),
+    }))
+  }, [])
 
   return (
     <button
