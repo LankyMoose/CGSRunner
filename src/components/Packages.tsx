@@ -16,6 +16,7 @@ export function Packages() {
   useEffect(() => {
     loading.value = (workspaces?.workspaces || []).length > 0
     packages.value = []
+    targets.value = []
     if (workspaces?.workspaces) {
       const runners: ShellRunner[] = []
       for (const dir of workspaces.workspaces) {
@@ -61,9 +62,7 @@ export function Packages() {
       <div className="flex justify-between">
         <div className="flex gap-2 items-start">
           <h1 className="text-2xl font-bold">Packages</h1>
-          {packages && (
-            <small className="badge">({packages.value.length})</small>
-          )}
+          <small className="badge">({packages.value.length})</small>
         </div>
         <button
           className={`flex items-center opacity-50 hover:opacity-100 ${
