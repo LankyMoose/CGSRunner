@@ -18,7 +18,10 @@ export function createFindPackagesRunner(
   options?: ShellRunnerOptions
 ): ShellRunner {
   // Final find command
-  const command = `find ${baseDir} \\( ${pruneExpression} \\) -prune -o -name 'package.json' -print`
+  const command = `find ${baseDir} \\( ${pruneExpression} \\) -prune -o -name 'package.json' -print | while IFS= read -r line; do
+  echo "$line"
+  sleep 0.001
+done`
 
   const _options: ShellRunnerOptions = {
     ...options,
