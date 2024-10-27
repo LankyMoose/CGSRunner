@@ -25,14 +25,17 @@ export class ShellRunner {
   constructor(public script: string, public opts?: ShellRunnerOptions) {
     this.command = Command.create("exec-sh", ["-c", script], opts?.spawnOpts)
     this.command.stdout.on("data", (data) => {
+      if (!this.childHandle) return
       this.outputs.push(data)
       opts?.onData?.(data)
     })
     this.command.stderr.on("data", (data) => {
+      if (!this.childHandle) return
       this.error = data
       opts?.onError?.(data)
     })
     this.command.on("close", (data) => {
+      if (!this.childHandle) return
       this.terminatedPayload = data
       this.completed = true
       this.childHandle = undefined

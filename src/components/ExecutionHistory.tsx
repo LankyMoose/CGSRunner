@@ -5,6 +5,7 @@ import { Modal } from "./Dialog/Modal"
 import { useHistory } from "../stores/history"
 import { TrashIcon } from "./icons/icon-trash"
 import { UserHistory } from "../tauri/storage/userData"
+import { useScriptJob } from "../context/ScriptJobContext"
 
 export function ExecutionHistory() {
   return (
@@ -27,14 +28,15 @@ function HistoryList() {
   console.log("rendering HistoryList", history)
   return (
     <div className="flex flex-col gap-2 max-h-[calc(100vh-170px)] overflow-y-auto">
-      {Object.entries(value.history).map(([ts, job]) => (
-        <JobDisplay key={`job-${ts}`} job={job} ts={ts} />
+      {Object.entries(value.history).map(([id, job]) => (
+        <JobDisplay key={id} job={job} id={id} />
       ))}
     </div>
   )
 }
 
-function JobDisplay({ job, ts }: { job: ScriptJob; ts: string }) {
+function JobDisplay({ job, id }: { job: ScriptJob; id: string }) {
+  const { cancelJob } = useScriptJob()
   const { setData } = useHistory(null, () => true)
   const [detailsOpen, setDetailsOpen] = useState(false)
 
@@ -45,12 +47,14 @@ function JobDisplay({ job, ts }: { job: ScriptJob; ts: string }) {
   const deleteJob = useCallback(async (e: Event) => {
     e.stopPropagation()
     e.preventDefault()
+
+    await cancelJob(id)
     ;(e.target as HTMLButtonElement).style.pointerEvents = "none"
     await setData((prev) => ({
       ...prev,
-      history: Object.keys(prev.history).reduce((acc, _ts) => {
-        if (_ts === ts) return acc
-        return { ...acc, [_ts]: prev.history[_ts] }
+      history: Object.keys(prev.history).reduce((acc, _id) => {
+        if (_id === id) return acc
+        return { ...acc, [_id]: prev.history[_id] }
       }, {} as UserHistory["history"]),
     }))
   }, [])
@@ -74,7 +78,7 @@ function JobDisplay({ job, ts }: { job: ScriptJob; ts: string }) {
         </div>
         <div className="flex flex-col gap-1 ">
           {Object.keys(job.targets).map((pkg) => (
-            <JobTargetDisplay key={pkg} jobTs={ts} targetName={pkg} />
+            <JobTargetDisplay key={pkg} jobId={id} targetName={pkg} />
           ))}
         </div>
       </div>
@@ -86,13 +90,13 @@ function JobDisplay({ job, ts }: { job: ScriptJob; ts: string }) {
 }
 
 type JobTargetDisplayProps = {
-  jobTs: string
+  jobId: string
   targetName: string
 }
 
-function JobTargetDisplay({ jobTs, targetName }: JobTargetDisplayProps) {
+function JobTargetDisplay({ jobId, targetName }: JobTargetDisplayProps) {
   const { value: tgt } = useHistory(
-    (state) => state?.history[jobTs]?.targets[targetName]
+    (state) => state?.history[jobId]?.targets[targetName]
   )
   if (!tgt) return null
 
