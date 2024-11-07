@@ -1,10 +1,10 @@
 [package]
-name = "kaioken-tauri-template"
+name = "CGSRunner"
 version = "0.1.0"
-description = "A Tauri App using Kaioken"
-authors = ["you"]
-license = ""
-repository = ""
+description = "GUI-driven shell runner"
+authors = ["LankyMoose"]
+license = "ISC"
+repository = "https://github.com/lankymoose/CGSRunner"
 edition = "2021"
 rust-version = "1.78"
 

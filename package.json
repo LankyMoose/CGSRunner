@@ -1,12 +1,12 @@
 {
-  "name": "kaioken-tauri-template",
-  "private": true,
+  "name": "cgs-runner",
   "version": "0.0.0",
+  "private": true,
   "type": "module",
   "scripts": {
     "dev": "tauri dev",
     "build": "tauri build",
-    "preview": "start ./src-tauri/target/release/kaioken-tauri-template.exe",
+    "preview": "start ./src-tauri/target/release/CGSRunner.exe",
     "dev:vite": "vite",
     "build:vite": "tsc && vite build",
     "preview:vite": "vite preview"
@@ -25,7 +25,7 @@
   "dependencies": {
     "@tauri-apps/api": "2.0.3",
     "@tauri-apps/plugin-dialog": "2.0.1",
-    "@tauri-apps/plugin-fs": "2.0.2",
+    "@tauri-apps/plugin-fs": "2.0.0",
     "@tauri-apps/plugin-shell": "2.0.1",
     "kaioken": "0.35.3",
     "tailwind-merge": "^2.5.4"

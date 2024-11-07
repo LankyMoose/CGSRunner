@@ -1,4 +1,5 @@
 import "./global.css"
+window.addEventListener("error", (e) => alert(e.error))
 import { mount } from "kaioken"
 import { App } from "./App"
 import { getCurrentWindow, PhysicalSize } from "@tauri-apps/api/window"

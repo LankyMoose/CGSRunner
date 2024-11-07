@@ -1,8 +1,8 @@
 {
   "$schema": "../node_modules/@tauri-apps/cli/config.schema.json",
-  "productName": "kaioken-tauri-template",
+  "productName": "CGSRunner",
   "version": "0.1.0",
-  "identifier": "com.kaioken-tauri-template.dev",
+  "identifier": "com.CGSRunner.dev",
   "build": {
     "beforeBuildCommand": "pnpm build:vite",
     "beforeDevCommand": "pnpm dev:vite",
@@ -12,9 +12,9 @@
   "app": {
     "windows": [
       {
-        "title": "kaioken-tauri-template",
-        "width": 800,
-        "height": 600,
+        "title": "CGSRunner",
+        "width": 720,
+        "height": 432,
         "resizable": true,
         "fullscreen": false
       }

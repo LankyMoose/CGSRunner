@@ -7,7 +7,7 @@ import {
 import { __DEV__ } from "../../env"
 
 const DIR_OPTIONS = {
-  baseDir: __DEV__ ? BaseDirectory.Desktop : BaseDirectory.AppData,
+  baseDir: __DEV__ ? BaseDirectory.Desktop : BaseDirectory.AppLocalData,
 }
 
 export enum LoadError {
@@ -38,7 +38,7 @@ export class FileProvider<T> {
     try {
       content = await readTextFile(this.options.fileName, DIR_OPTIONS)
     } catch (error) {
-      console.error(error)
+      alert(error)
       return [LoadError.READ_FAILURE, null]
     }
     try {
@@ -69,7 +69,7 @@ export class FileProvider<T> {
 
       return null
     } catch (error) {
-      console.error(error)
+      alert(error)
       return SaveError.WRITE_FAILURE
     }
   }

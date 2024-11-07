@@ -3,6 +3,21 @@
 version = 3
 
 [[package]]
+name = "CGSRunner"
+version = "0.1.0"
+dependencies = [
+ "log",
+ "serde",
+ "serde_json",
+ "tauri",
+ "tauri-build",
+ "tauri-plugin-dialog",
+ "tauri-plugin-fs",
+ "tauri-plugin-log",
+ "tauri-plugin-shell",
+]
+
+[[package]]
 name = "addr2line"
 version = "0.24.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1897,21 +1912,6 @@ dependencies = [
  "fluent-uri",
  "serde",
  "serde_json",
-]
-
-[[package]]
-name = "kaioken-tauri-template"
-version = "0.1.0"
-dependencies = [
- "log",
- "serde",
- "serde_json",
- "tauri",
- "tauri-build",
- "tauri-plugin-dialog",
- "tauri-plugin-fs",
- "tauri-plugin-log",
- "tauri-plugin-shell",
 ]
 
 [[package]]
