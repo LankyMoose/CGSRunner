@@ -77,8 +77,8 @@ function JobDisplay({ job, id }: { job: ScriptJob; id: string }) {
           </div>
         </div>
         <div className="flex flex-col gap-1 ">
-          {Object.keys(job.targets).map((pkg) => (
-            <JobTargetDisplay key={pkg} jobId={id} targetName={pkg} />
+          {Object.keys(job.targets).map((tgt) => (
+            <JobTargetDisplay key={tgt} jobId={id} targetName={tgt} />
           ))}
         </div>
       </div>
@@ -137,10 +137,10 @@ function JobDetailsDisplay({
       <h1 className="text-2xl font-bold modal-region-heading">Targets</h1>
       <div className="modal-region">
         <ul className="flex flex-col gap-2">
-          {Object.entries(job.targets).map(([pkg, res]) => (
-            <li key={pkg} className="bg-black bg-opacity-30 rounded">
+          {Object.entries(job.targets).map(([tgt, res]) => (
+            <li key={tgt} className="bg-black bg-opacity-30 rounded">
               <h2 className="font-bold px-2 py-1">
-                {">"} {pkg}
+                {">"} {tgt}
               </h2>
               <div className="max-w-full overflow-auto text-xs p-2 bg-black bg-opacity-20">
                 <pre>{res.stdout}</pre>

@@ -10,6 +10,7 @@ export type ShellRunnerOptions = {
   onEnd?: (data: TerminatedPayload) => void
   onError?: (data: string) => void
   spawnOpts?: SpawnOptions
+  args?: string[]
 }
 
 export class ShellRunner {
@@ -23,7 +24,11 @@ export class ShellRunner {
   private command: Command<string>
 
   constructor(public script: string, public opts?: ShellRunnerOptions) {
-    this.command = Command.create("exec-sh", ["-c", script], opts?.spawnOpts)
+    this.command = Command.create(
+      "exec-sh",
+      ["-c", script, "--", ...(opts?.args ?? [])],
+      opts?.spawnOpts
+    )
     this.command.stdout.on("data", (data) => {
       if (!this.childHandle) return
       this.outputs.push(data)

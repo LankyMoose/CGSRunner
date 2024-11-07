@@ -34,8 +34,8 @@ export const ScriptJobProvider: Kaioken.FC = ({ children }) => {
     const jobTargets = [...targets.value]
     const job: ScriptJob = {
       script,
-      targets: jobTargets.reduce((acc, pkg) => {
-        acc[pkg] = { code: null, stderr: "", stdout: "" }
+      targets: jobTargets.reduce((acc, tgt) => {
+        acc[tgt] = { code: null, stderr: "", stdout: "" }
         return acc
       }, {} as ScriptJob["targets"]),
     }
@@ -47,8 +47,8 @@ export const ScriptJobProvider: Kaioken.FC = ({ children }) => {
     const runners: RunnerRejectorTuple[] = []
     jobsInProgress.current[id] = runners
     await Promise.allSettled(
-      jobTargets.map((pkg) => {
-        const result = job.targets[pkg]
+      jobTargets.map((tgt) => {
+        const result = job.targets[tgt]
         const update = () =>
           setData((prev) => ({
             ...prev,
@@ -58,7 +58,7 @@ export const ScriptJobProvider: Kaioken.FC = ({ children }) => {
                 ...job,
                 targets: {
                   ...job.targets,
-                  [pkg]: result,
+                  [tgt]: result,
                 },
               },
             },
@@ -66,7 +66,6 @@ export const ScriptJobProvider: Kaioken.FC = ({ children }) => {
 
         return new Promise<void>((resolve, reject) => {
           const runner = new ShellRunner(job.script.contents, {
-            spawnOpts: { cwd: pkg },
             onData(data) {
               result.stdout += data
               update()
@@ -80,6 +79,7 @@ export const ScriptJobProvider: Kaioken.FC = ({ children }) => {
               update()
               resolve()
             },
+            args: [tgt],
           })
           runners.push([runner, reject])
           runner.start()
