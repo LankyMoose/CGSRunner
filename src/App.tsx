@@ -1,11 +1,10 @@
 import { ToastProvider } from "./context/ToastContext"
-import { Workspaces } from "./components/Workspaces"
-import { Packages } from "./components/Packages"
+import { Targets } from "./components/Targets"
 import { ExecutionHistory } from "./components/ExecutionHistory"
 import { ScriptSelector } from "./components/ScriptSelector"
 import { ScriptJobProvider } from "./context/ScriptJobContext"
 import { useAsync } from "kaioken"
-import { loadWorkspaces, useWorkspaces } from "./stores/workspaces"
+import { loadTargets, useTargets } from "./stores/targets"
 import { loadHistory, useHistory } from "./stores/history"
 
 const Providers: Kaioken.FC = ({ children }) => {
@@ -18,20 +17,14 @@ const Providers: Kaioken.FC = ({ children }) => {
 
 export function App() {
   useAsync(async () => {
-    const [workspaces, history] = await Promise.all([
-      loadWorkspaces(),
-      loadHistory(),
-    ])
-    useWorkspaces.setState(workspaces)
+    const [targets, history] = await Promise.all([loadTargets(), loadHistory()])
+    useTargets.setState(targets)
     useHistory.setState(history)
   }, [])
   return (
     <Providers>
-      <header>
-        <Workspaces />
-      </header>
       <main>
-        <Packages />
+        <Targets />
         <ExecutionHistory />
         <ScriptSelector />
       </main>

@@ -12,7 +12,7 @@ export function ScriptSelector() {
     if (!target.files) return
     const file = target.files[0]
     const text = await file.text()
-    selectedScript.value = { path: file.name, contents: text }
+    selectedScript.value = { path: file.name, contents: text.trim() }
   }
 
   const handleRun = async () => {
@@ -41,7 +41,7 @@ export function ScriptSelector() {
 
       {selectedScript.value && targets.value.length > 0 && (
         <button
-          className="px-2 py-1 font-bold text-sm bg-success shadow bg-opacity-50 rounded border border-white border-opacity-10 hover:bg-opacity-100"
+          className="px-2 py-1 font-bold text-sm text-nowrap bg-success shadow bg-opacity-50 rounded border border-white border-opacity-10 hover:bg-opacity-100"
           onclick={handleRun}
         >
           Run script on selected packages

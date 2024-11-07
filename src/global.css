@@ -28,7 +28,7 @@ main {
   display: grid;
   max-width: calc(100vw - .5rem);
   grid-template-areas:
-    "packages        history"
+    "targets         history"
     "script-selector history";
   grid-template-columns: calc(100% - var(--history-width)) var(--history-width);
   grid-template-rows: 1fr 54px;

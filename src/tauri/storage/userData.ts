@@ -4,28 +4,33 @@ import { FileProvider } from "./fileProvider"
 
 type TimeStamp = string
 
-export type UserWorkspaces = {
+type UserTarget = {
+  path: string
+  dir?: boolean
+}
+
+export type UserTargets = {
   version: string
-  workspaces: string[]
+  targets: UserTarget[]
 }
 export type UserHistory = {
   version: string
   history: Record<TimeStamp, ScriptJob>
 }
 
-export const workspacesFileProvider = new FileProvider<UserWorkspaces>({
-  fileName: "workspaces.json",
+export const targetsFileProvider = new FileProvider<UserTargets>({
+  fileName: "targets.json",
   defaultData: {
     version: "0.0.0",
-    workspaces: [],
+    targets: [],
   },
-  validate: (data): data is UserWorkspaces => {
+  validate: (data): data is UserTargets => {
     return (
       typeof data === "object" &&
       !!data &&
       "version" in data &&
-      "workspaces" in data &&
-      Array.isArray(data.workspaces)
+      "targets" in data &&
+      Array.isArray(data.targets)
     )
   },
 })

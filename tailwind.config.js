@@ -6,7 +6,7 @@ export default {
   theme: {
     extend: {
       colors: {
-        info: "#4f46e5",
+        info: "#3f2993",
         success: "#267d46",
         warning: "#a46319",
         danger: "#963030",
