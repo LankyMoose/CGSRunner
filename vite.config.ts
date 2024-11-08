@@ -1,7 +1,13 @@
+import path from "node:path"
 import { defineConfig } from "vite"
 import kaioken from "vite-plugin-kaioken"
 
 export default defineConfig({
+  resolve: {
+    alias: {
+      $: path.join(__dirname, "src"),
+    },
+  },
   // prevent vite from obscuring rust errors
   clearScreen: false,
   // Tauri expects a fixed port, fail if that port is not available

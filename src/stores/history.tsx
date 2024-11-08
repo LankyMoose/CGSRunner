@@ -1,26 +1,25 @@
 import { createStore } from "kaioken"
-import { UserHistory, historyFileProvider } from "../tauri/storage/userData"
+import { HistoryDTO, HistoryRecord, db } from "$/idb"
 
 export const useHistory = createStore(
-  null as UserHistory | null,
-  (set, get) => ({
-    async setData(setter: Kaioken.StateSetter<UserHistory>) {
-      const data = get()
-      if (!data) return null
-      const newData = setter instanceof Function ? setter({ ...data }) : setter
-      const err = await historyFileProvider.save(newData)
-      if (!err) {
-        Object.assign(data, newData)
-        set(newData)
-        return null
-      }
-      return err
+  null as HistoryRecord[] | null,
+  (set) => ({
+    addHistory: async (history: HistoryDTO) => {
+      const newRecord = await db.history.create(history)
+      set((prev) => [...(prev ?? []), newRecord])
+      return newRecord
+    },
+    removeHistory: async (history: HistoryRecord) => {
+      const results = await db.jobResult.findMany(
+        (r) => r.historyId === history.id
+      )
+      await Promise.all(results.map((r) => db.jobResult.delete(r.id)))
+      await db.history.delete(history.id)
+      set((prev) => prev?.filter((h) => h.id !== history.id) ?? [])
     },
   })
 )
 
 export const loadHistory = async () => {
-  const [err, data] = await historyFileProvider.load()
-  if (err) throw new Error(err)
-  return data
+  return db.history.all()
 }

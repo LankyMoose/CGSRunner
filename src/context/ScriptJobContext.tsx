@@ -1,7 +1,8 @@
 import { createContext, Signal, useContext, useRef, useSignal } from "kaioken"
-import { ScriptJob, ScriptSelection } from "../types"
+import { ScriptSelection } from "../types"
 import { useHistory } from "../stores/history"
 import { ShellRunner } from "../tauri/shell/shellRunner"
+import { db } from "$/idb"
 
 type ScriptJobCtx = {
   targets: Signal<string[]>
@@ -16,7 +17,7 @@ export const useScriptJob = () => useContext(ScriptJobContext)
 type RunnerRejectorTuple = [ShellRunner, () => void]
 
 export const ScriptJobProvider: Kaioken.FC = ({ children }) => {
-  const { value: data, setData } = useHistory()
+  const { value: data, addHistory } = useHistory()
   const jobsInProgress = useRef<Record<string, RunnerRejectorTuple[]>>({})
   const targets = useSignal<string[]>([])
 
@@ -30,53 +31,41 @@ export const ScriptJobProvider: Kaioken.FC = ({ children }) => {
 
   const runJob = async (script: ScriptSelection) => {
     if (!data) return
-    const id = crypto.randomUUID()
     const jobTargets = [...targets.value]
-    const job: ScriptJob = {
-      script,
-      targets: jobTargets.reduce((acc, tgt) => {
-        acc[tgt] = { code: null, stderr: "", stdout: "" }
-        return acc
-      }, {} as ScriptJob["targets"]),
-    }
-    await setData((prev) => ({
-      ...prev,
-      history: { ...prev.history, [id]: job },
-    }))
+    const job = await addHistory({
+      script: script.contents,
+      scriptPath: script.path,
+    })
+    const tgts = await Promise.all(
+      jobTargets.map((tgt) =>
+        db.jobResult.create({
+          historyId: job.id,
+          target: tgt,
+          stderr: "",
+          stdout: "",
+        })
+      )
+    )
 
     const runners: RunnerRejectorTuple[] = []
-    jobsInProgress.current[id] = runners
+    jobsInProgress.current[job.id] = runners
     await Promise.allSettled(
       jobTargets.map((tgt) => {
-        const result = job.targets[tgt]
-        const update = () =>
-          setData((prev) => ({
-            ...prev,
-            history: {
-              ...prev.history,
-              [id]: {
-                ...job,
-                targets: {
-                  ...job.targets,
-                  [tgt]: result,
-                },
-              },
-            },
-          }))
+        const result = tgts.find((r) => r.target === tgt)!
 
         return new Promise<void>((resolve, reject) => {
-          const runner = new ShellRunner(job.script.contents, {
+          const runner = new ShellRunner(script.contents, {
             onData(data) {
               result.stdout += data
-              update()
+              db.jobResult.update(result)
             },
             onError(data) {
               result.stderr += data
-              update()
+              db.jobResult.update(result)
             },
             onEnd(data) {
-              result.code = data.code
-              update()
+              result.code = data.code ?? undefined
+              db.jobResult.update(result)
               resolve()
             },
             args: [tgt],
@@ -86,7 +75,7 @@ export const ScriptJobProvider: Kaioken.FC = ({ children }) => {
         })
       })
     )
-    delete jobsInProgress.current[id]
+    delete jobsInProgress.current[job.id]
   }
   return (
     <ScriptJobContext.Provider value={{ runJob, cancelJob, targets }}>

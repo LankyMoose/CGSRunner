@@ -7,14 +7,6 @@ import { useAsync } from "kaioken"
 import { loadTargets, useTargets } from "./stores/targets"
 import { loadHistory, useHistory } from "./stores/history"
 
-const Providers: Kaioken.FC = ({ children }) => {
-  return (
-    <ToastProvider>
-      <ScriptJobProvider>{children}</ScriptJobProvider>
-    </ToastProvider>
-  )
-}
-
 export function App() {
   useAsync(async () => {
     const [targets, history] = await Promise.all([loadTargets(), loadHistory()])
@@ -22,12 +14,14 @@ export function App() {
     useHistory.setState(history)
   }, [])
   return (
-    <Providers>
-      <main>
-        <Targets />
-        <ExecutionHistory />
-        <ScriptSelector />
-      </main>
-    </Providers>
+    <ToastProvider>
+      <ScriptJobProvider>
+        <main>
+          <Targets />
+          <ExecutionHistory />
+          <ScriptSelector />
+        </main>
+      </ScriptJobProvider>
+    </ToastProvider>
   )
 }

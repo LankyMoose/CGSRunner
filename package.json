@@ -26,8 +26,8 @@
   "dependencies": {
     "@tauri-apps/api": "2.0.3",
     "@tauri-apps/plugin-dialog": "2.0.1",
-    "@tauri-apps/plugin-fs": "2.0.0",
     "@tauri-apps/plugin-shell": "2.0.1",
+    "async-idb-orm": "^2.0.3",
     "kaioken": "0.35.3",
     "tailwind-merge": "^2.5.4"
   }

@@ -4,10 +4,10 @@ import { openFsSelectorDialog } from "../tauri/dialog"
 import { useToast } from "../context/ToastContext"
 import { useTargets } from "../stores/targets"
 import { FileIcon } from "./icons/icon-file"
-import { UserTargets } from "../tauri/storage/userData"
 import { FolderPlusIcon } from "./icons/icon-folder-plus"
 import { FilePlusIcon } from "./icons/icon-file-plus"
 import { TrashIcon } from "./icons/icon-trash"
+import { TargetDTO, TargetRecord } from "$/idb"
 
 const selectDirs = () => openFsSelectorDialog({ dir: true })
 const selectFiles = () => openFsSelectorDialog()
@@ -15,35 +15,22 @@ const selectFiles = () => openFsSelectorDialog()
 export function Targets() {
   const { targets } = useScriptJob()
   const showToast = useToast()
-  const { value: data, setData } = useTargets()
+  const { value: data, addTargets, removeTarget } = useTargets()
 
   const addNewTargets = async (dir?: boolean) => {
-    const targets = await (dir ? selectDirs() : selectFiles())
-    if (!targets) return
+    const selectedNewTargets = await (dir ? selectDirs() : selectFiles())
+    if (!selectedNewTargets) return
 
-    const tgtDict = new Set([...(data?.targets.map((t) => t.path) ?? [])])
-    const newTargets = [
-      ...(data?.targets ?? []),
-      ...targets
-        .filter((t) => !tgtDict.has(t))
-        .map((path) => ({
-          path,
-          dir,
-        })),
-    ]
-
-    const saveError = await setData((prev) => ({
-      ...prev,
-      targets: newTargets,
-    }))
-
-    const pluralized = targets.length > 1 ? "targets" : "target"
-
-    if (saveError) {
-      console.error(saveError)
-      showToast("danger", `Failed to add ${pluralized}`)
-      return
+    const tgtDict = new Set([...(data?.map((t) => t.path) ?? [])])
+    const targetsToSave: TargetDTO[] = []
+    for (const tgt of selectedNewTargets) {
+      if (tgtDict.has(tgt)) continue
+      tgtDict.add(tgt)
+      targetsToSave.push({ path: tgt, dir })
     }
+
+    await addTargets(targetsToSave)
+    const pluralized = targetsToSave.length > 1 ? "targets" : "target"
     showToast("success", `Added ${pluralized}`)
   }
 
@@ -56,17 +43,9 @@ export function Targets() {
   }
 
   const deleteTarget = async (tgt: string) => {
-    const saveError = await setData((prev) => ({
-      ...prev,
-      targets: prev.targets.filter((t) => t.path !== tgt),
-    }))
-    if (saveError) {
-      console.error(saveError)
-      showToast("danger", `Failed to delete target`)
-      return
-    }
-    if (targets.value.includes(tgt))
-      targets.value = targets.value.filter((p) => p !== tgt)
+    const match = data?.find((t) => t.path === tgt)
+    if (!match) return
+    await removeTarget(match)
     showToast("success", `Deleted target`)
   }
 
@@ -94,7 +73,7 @@ export function Targets() {
       </div>
 
       <TargetsList
-        targets={data?.targets ?? []}
+        targets={data ?? []}
         selectedTargets={targets.value}
         deselectTarget={deselectTarget}
         selectTarget={selectTarget}
@@ -111,7 +90,7 @@ function TargetsList({
   selectTarget,
   deleteTarget,
 }: {
-  targets: UserTargets["targets"]
+  targets: TargetRecord[]
   selectedTargets: string[]
   deselectTarget: (tgt: string) => void
   selectTarget: (tgt: string) => void
