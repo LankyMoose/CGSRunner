@@ -13,7 +13,7 @@ const selectDirs = () => openFsSelectorDialog({ dir: true })
 const selectFiles = () => openFsSelectorDialog()
 
 export function Targets() {
-  const { targets } = useScriptJob()
+  const { targets: selectedTargets } = useScriptJob()
   const showToast = useToast()
   const { value: data, addTargets, removeTarget } = useTargets()
 
@@ -35,17 +35,20 @@ export function Targets() {
   }
 
   const deselectTarget = (tgt: string) => {
-    targets.value = targets.value.filter((p) => p !== tgt)
+    selectedTargets.value = selectedTargets.value.filter((p) => p !== tgt)
   }
 
   const selectTarget = (tgt: string) => {
-    targets.value = [...targets.value, tgt]
+    selectedTargets.value = [...selectedTargets.value, tgt]
   }
 
   const deleteTarget = async (tgt: string) => {
     const match = data?.find((t) => t.path === tgt)
     if (!match) return
     await removeTarget(match)
+    if (selectedTargets.value.includes(tgt)) {
+      selectedTargets.value = selectedTargets.value.filter((p) => p !== tgt)
+    }
     showToast("success", `Deleted target`)
   }
 
@@ -54,7 +57,7 @@ export function Targets() {
       <div className="flex justify-between">
         <div className="flex gap-2 items-start">
           <h1 className="text-2xl font-bold">Targets</h1>
-          <small className="badge">({targets.value.length})</small>
+          <small className="badge">({selectedTargets.value.length})</small>
         </div>
         <div className="flex gap-2">
           <button
@@ -74,7 +77,7 @@ export function Targets() {
 
       <TargetsList
         targets={data ?? []}
-        selectedTargets={targets.value}
+        selectedTargets={selectedTargets.value}
         deselectTarget={deselectTarget}
         selectTarget={selectTarget}
         deleteTarget={deleteTarget}

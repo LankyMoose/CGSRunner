@@ -169,6 +169,11 @@ function JobDetailsDisplayResultRow({ result }: { result: JobResultRecord }) {
       <div className="max-w-full overflow-auto text-xs p-2 bg-black bg-opacity-20">
         <pre>{result.stdout}</pre>
       </div>
+      {result.stderr && (
+        <div className="max-w-full overflow-auto text-xs p-2 bg-black bg-opacity-20">
+          <pre>{result.stderr}</pre>
+        </div>
+      )}
     </li>
   )
 }
