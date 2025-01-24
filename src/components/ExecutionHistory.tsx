@@ -27,7 +27,7 @@ function HistoryList() {
 
   console.log("rendering HistoryList", history)
   return (
-    <div className="flex flex-col gap-2 max-h-[calc(100vh-170px)] overflow-y-auto">
+    <div className="flex flex-col gap-2 overflow-y-auto">
       {Object.entries(value.history).map(([id, job]) => (
         <JobDisplay key={id} job={job} id={id} />
       ))}
