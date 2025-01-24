@@ -5,10 +5,9 @@
   "windows": ["main"],
   "permissions": [
     "core:default",
-    "fs:allow-applocaldata-write",
-    "fs:allow-applocaldata-read",
-    "fs:allow-desktop-read",
-    "fs:allow-desktop-write",
+    "fs:allow-document-read-recursive",
+    "fs:allow-document-write-recursive",
+    "fs:allow-document-meta-recursive",
     "fs:default",
     "dialog:default",
     "core:window:allow-set-min-size",
