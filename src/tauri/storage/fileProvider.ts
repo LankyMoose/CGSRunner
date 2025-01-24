@@ -3,11 +3,18 @@ import {
   readTextFile,
   writeTextFile,
   BaseDirectory,
+  mkdir,
 } from "@tauri-apps/plugin-fs"
 import { join } from "@tauri-apps/api/path"
 
-const DIR_OPTIONS = {
+const TAURI_DIR_OPTIONS = {
   baseDir: BaseDirectory.Document,
+}
+
+const DIR_NAME = "cgs-runner"
+
+if (!(await exists(DIR_NAME, TAURI_DIR_OPTIONS))) {
+  await mkdir(DIR_NAME, TAURI_DIR_OPTIONS)
 }
 
 export enum LoadError {
@@ -32,16 +39,16 @@ export class FileProvider<T> {
   ) {}
   async load(): Promise<LoadResult<T>> {
     const fileExists = await exists(
-      await join(this.options.fileName),
-      DIR_OPTIONS
+      await join(DIR_NAME, this.options.fileName),
+      TAURI_DIR_OPTIONS
     )
     if (!fileExists) await this.save(this.options.defaultData)
 
     let content: string, parsed: unknown
     try {
       content = await readTextFile(
-        await join(this.options.fileName),
-        DIR_OPTIONS
+        await join(DIR_NAME, this.options.fileName),
+        TAURI_DIR_OPTIONS
       )
     } catch (error) {
       alert(error)
@@ -68,9 +75,9 @@ export class FileProvider<T> {
     }
     try {
       await writeTextFile(
-        await join(this.options.fileName),
+        await join(DIR_NAME, this.options.fileName),
         JSON.stringify(data, null, 2),
-        DIR_OPTIONS
+        TAURI_DIR_OPTIONS
       )
 
       return null

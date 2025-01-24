@@ -5,6 +5,9 @@
   "windows": ["main"],
   "permissions": [
     "core:default",
+    "fs:allow-document-read",
+    "fs:allow-document-write",
+    "fs:allow-document-meta",
     "fs:allow-document-read-recursive",
     "fs:allow-document-write-recursive",
     "fs:allow-document-meta-recursive",
