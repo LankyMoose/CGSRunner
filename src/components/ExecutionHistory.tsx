@@ -52,10 +52,13 @@ function JobDisplay({ job, id }: { job: ScriptJob; id: string }) {
     ;(e.target as HTMLButtonElement).style.pointerEvents = "none"
     await setData((prev) => ({
       ...prev,
-      history: Object.keys(prev.history).reduce((acc, _id) => {
-        if (_id === id) return acc
-        return { ...acc, [_id]: prev.history[_id] }
-      }, {} as UserHistory["history"]),
+      history: Object.keys(prev.history).reduce<UserHistory["history"]>(
+        (acc, _id) => {
+          if (_id === id) return acc
+          return { ...acc, [_id]: prev.history[_id] }
+        },
+        {}
+      ),
     }))
   }, [])
 
@@ -83,7 +86,7 @@ function JobDisplay({ job, id }: { job: ScriptJob; id: string }) {
         </div>
       </div>
       <Modal open={detailsOpen} setOpen={setDetailsOpen}>
-        <JobDetailsDisplay job={job} setOpen={setDetailsOpen} />
+        <JobDetailsDisplay job={job} jobId={id} setOpen={setDetailsOpen} />
       </Modal>
     </button>
   )
@@ -121,11 +124,16 @@ function JobTargetDisplay({ jobId, targetName }: JobTargetDisplayProps) {
 
 function JobDetailsDisplay({
   job,
+  jobId,
   setOpen,
 }: {
   job: ScriptJob
+  jobId: string
   setOpen: (open: boolean) => void
 }) {
+  const { cancelJob, cancelJobTarget } = useScriptJob()
+  const cancel = () => cancelJob(jobId)
+
   return (
     <div className="flex flex-col gap-2 relative">
       <h1 className="text-2xl font-bold modal-region-heading">Details</h1>
@@ -139,9 +147,19 @@ function JobDetailsDisplay({
         <ul className="flex flex-col gap-2">
           {Object.entries(job.targets).map(([tgt, res]) => (
             <li key={tgt} className="bg-black bg-opacity-30 rounded">
-              <h2 className="font-bold px-2 py-1">
-                {">"} {tgt}
-              </h2>
+              <div className="flex items-center justify-between pr-1">
+                <h2 className="font-bold px-2 py-1">
+                  {">"} {tgt}
+                </h2>
+                {res.code === null && (
+                  <button
+                    onclick={() => cancelJobTarget(jobId, tgt)}
+                    className="px-2 py-0 bg-danger bg-opacity-50 hover:bg-opacity-75 rounded text-sm"
+                  >
+                    Cancel
+                  </button>
+                )}
+              </div>
               <div className="max-w-full overflow-auto text-xs p-2 bg-black bg-opacity-20">
                 <pre>{res.stdout}</pre>
               </div>
@@ -156,6 +174,7 @@ function JobDetailsDisplay({
         >
           Close
         </button>
+        <button onclick={cancel}></button>
       </div>
     </div>
   )

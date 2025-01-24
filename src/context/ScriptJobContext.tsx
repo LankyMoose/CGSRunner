@@ -7,25 +7,35 @@ type ScriptJobCtx = {
   targets: Signal<string[]>
   runJob: (script: ScriptSelection) => Promise<void>
   cancelJob: (id: string) => Promise<void>
+  cancelJobTarget: (jobId: string, targetId: string) => Promise<void>
 }
 
 const ScriptJobContext = createContext<ScriptJobCtx>(null as any)
 
 export const useScriptJob = () => useContext(ScriptJobContext)
 
-type RunnerRejectorTuple = [ShellRunner, () => void]
+type RunnerRejectorTuple = [string, ShellRunner, () => void]
 
 export const ScriptJobProvider: Kaioken.FC = ({ children }) => {
   const { value: data, setData } = useHistory()
   const jobsInProgress = useRef<Record<string, RunnerRejectorTuple[]>>({})
   const targets = useSignal<string[]>([])
 
-  const cancelJob = async (id: string) => {
-    const job = jobsInProgress.current[id]
+  const cancelJob = async (jobId: string) => {
+    const job = jobsInProgress.current[jobId]
     if (!job) return
     await Promise.all(
-      job.map(([runner, reject]) => (reject(), runner.cancel()))
+      job.map(([_, runner, reject]) => (reject(), runner.cancel()))
     )
+  }
+
+  const cancelJobTarget = async (jobId: string, targetId: string) => {
+    debugger
+    const tgt = jobsInProgress.current[jobId]?.find(([tgt]) => tgt === targetId)
+    if (!tgt) return
+    const [_, runner, reject] = tgt
+    reject()
+    await runner.cancel()
   }
 
   const runJob = async (script: ScriptSelection) => {
@@ -81,7 +91,7 @@ export const ScriptJobProvider: Kaioken.FC = ({ children }) => {
             },
             args: [tgt],
           })
-          runners.push([runner, reject])
+          runners.push([tgt, runner, reject])
           runner.start()
         })
       })
@@ -89,7 +99,9 @@ export const ScriptJobProvider: Kaioken.FC = ({ children }) => {
     delete jobsInProgress.current[id]
   }
   return (
-    <ScriptJobContext.Provider value={{ runJob, cancelJob, targets }}>
+    <ScriptJobContext.Provider
+      value={{ runJob, cancelJob, cancelJobTarget, targets }}
+    >
       {children}
     </ScriptJobContext.Provider>
   )

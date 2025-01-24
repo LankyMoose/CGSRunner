@@ -107,6 +107,6 @@ button:disabled {
 }
 
 .modal-footer {
-  @apply sticky bottom-0 p-4;
+  @apply sticky bottom-0 p-4 flex justify-between;
   background: #2c2c3f;
 }
