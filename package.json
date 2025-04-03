@@ -14,21 +14,21 @@
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4.1.1",
-    "@tauri-apps/cli": "2.2.5",
-    "@types/node": "^22.10.10",
-    "@types/wicg-file-system-access": "^2023.10.5",
-    "postcss": "^8.4.47",
+    "@tauri-apps/cli": "2.4.1",
+    "@types/node": "^22.14.0",
+    "@types/wicg-file-system-access": "^2023.10.6",
+    "postcss": "^8.5.3",
     "tailwindcss": "^4.1.1",
-    "typescript": "^5.7.3",
-    "vite": "^6.0.11",
-    "vite-plugin-kaioken": "0.15.0"
+    "typescript": "^5.8.2",
+    "vite": "^6.2.5",
+    "vite-plugin-kaioken": "0.16.4"
   },
   "dependencies": {
-    "@tauri-apps/api": "2.2.0",
-    "@tauri-apps/plugin-dialog": "2.2.0",
-    "@tauri-apps/plugin-fs": "2.2.0",
-    "@tauri-apps/plugin-shell": "2.2.0",
-    "kaioken": "0.35.9",
-    "tailwind-merge": "^2.5.4"
+    "@tauri-apps/api": "2.4.1",
+    "@tauri-apps/plugin-dialog": "2.2.1",
+    "@tauri-apps/plugin-fs": "2.2.1",
+    "@tauri-apps/plugin-shell": "2.2.1",
+    "kaioken": "0.36.4",
+    "tailwind-merge": "^3.1.0"
   }
 }
