@@ -62,7 +62,7 @@ function JobDisplay({ job, id }: { job: ScriptJob; id: string }) {
   return (
     <button
       onclick={handleMaximizeClick}
-      className={`p-1 rounded border border-neutral-400 border-opacity-5 opacity-85 hover:opacity-100 relative bg-neutral-400 bg-opacity-5`}
+      className={`p-1 rounded-sm border border-neutral-400/5 opacity-85 hover:opacity-100 relative bg-neutral-400/5`}
     >
       <div className="flex flex-col gap-2">
         <div className="flex items-center justify-between">
@@ -102,12 +102,12 @@ function JobTargetDisplay({ jobId, targetName }: JobTargetDisplayProps) {
 
   return (
     <div
-      className={`flex justify-between gap-1 p-1 rounded bg-opacity-30 ${
+      className={`flex justify-between gap-1 p-1 rounded ${
         tgt.code === null
-          ? "bg-warning"
+          ? "bg-warning/30"
           : tgt.stderr
-          ? "bg-danger"
-          : "bg-success"
+          ? "bg-danger/30"
+          : "bg-success/30"
       }`}
     >
       <span className="truncate text-xs">
@@ -130,7 +130,7 @@ function JobDetailsDisplay({
     <div className="flex flex-col gap-2 relative">
       <h1 className="text-2xl font-bold modal-region-heading">Details</h1>
       <div className="modal-region">
-        <pre className="p-2 bg-black bg-opacity-30 rounded text-xs">
+        <pre className="p-2 bg-black/30 rounded-sm text-xs">
           {job.script.contents}
         </pre>
       </div>
@@ -138,11 +138,11 @@ function JobDetailsDisplay({
       <div className="modal-region">
         <ul className="flex flex-col gap-2">
           {Object.entries(job.targets).map(([tgt, res]) => (
-            <li key={tgt} className="bg-black bg-opacity-30 rounded">
+            <li key={tgt} className="bg-black/30 rounded-sm">
               <h2 className="font-bold px-2 py-1">
                 {">"} {tgt}
               </h2>
-              <div className="max-w-full overflow-auto text-xs p-2 bg-black bg-opacity-20">
+              <div className="max-w-full overflow-auto text-xs p-2 bg-black/20">
                 <pre>{res.stdout}</pre>
               </div>
             </li>
@@ -152,7 +152,7 @@ function JobDetailsDisplay({
       <div className="modal-footer">
         <button
           onclick={() => setOpen(false)}
-          className="px-2 py-1 bg-neutral-100 bg-opacity-15 hover:bg-opacity-25 rounded"
+          className="px-2 py-1 bg-neutral-100/15 hover:bg-neutral-100/25 rounded-sm"
         >
           Close
         </button>

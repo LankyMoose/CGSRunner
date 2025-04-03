@@ -1,6 +1,30 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import 'tailwindcss';
+
+@theme {
+  --color-info: #3f2993;
+  --color-success: #267d46;
+  --color-warning: #a46319;
+  --color-danger: #963030;
+}
+
+/*
+  The default border color has changed to `currentColor` in Tailwind CSS v4,
+  so we've added these compatibility styles to make sure everything still
+  looks the same as it did with Tailwind CSS v3.
+
+  If we ever want to remove these styles, we need to add an explicit border
+  color utility to any element that depends on these defaults.
+*/
+@layer base {
+
+  *,
+  ::after,
+  ::before,
+  ::backdrop,
+  ::file-selector-button {
+    border-color: var(--color-gray-200, currentColor);
+  }
+}
 
 :root {
   background-color: rgb(21 19 19);
@@ -47,11 +71,11 @@ main #script-selector {
 }
 
 .glass-panel {
-  @apply bg-neutral-400 bg-opacity-5 rounded border border-neutral-400 border-opacity-5;
+  @apply bg-neutral-400/5 rounded-sm border border-neutral-400/5;
 }
 
 .toast {
-  @apply flex flex-col items-center justify-center absolute right-4 top-4 w-52 h-[54px] px-4 transition-all duration-300 rounded;
+  @apply flex flex-col items-center justify-center absolute right-4 top-4 w-52 h-[54px] px-4 transition-all duration-300 rounded-sm;
 }
 
 .toast-message {
@@ -75,7 +99,7 @@ main #script-selector {
 }
 
 .badge {
-  @apply rounded border border-white border-opacity-10 bg-neutral-100 bg-opacity-25 px-1;
+  @apply rounded-sm border border-white/10 bg-neutral-100/25 px-1;
   font-size: 10px;
 }
 
@@ -89,7 +113,7 @@ button:disabled {
 }
 
 .modal {
-  @apply fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 transition rounded;
+  @apply fixed top-1/2 left-1/2 transition rounded-sm;
   background: #1f1f2b;
   max-width: 90vw;
   max-height: 90vh;

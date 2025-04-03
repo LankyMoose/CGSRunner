@@ -4,7 +4,7 @@ export function Spinner(props: ElementProps<"svg">) {
   return (
     <svg
       aria-hidden="true"
-      className="text-neutral-50 text-opacity-30 animate-spin fill-neutral-50"
+      className="text-neutral-50/30 animate-spin fill-neutral-50"
       viewBox="0 0 100 101"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"

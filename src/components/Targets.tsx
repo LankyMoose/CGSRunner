@@ -79,13 +79,13 @@ export function Targets() {
         </div>
         <div className="flex gap-2">
           <button
-            className="bg-info px-2 rounded bg-opacity-50 hover:bg-opacity-100"
+            className="bg-info/50 hover:bg-info px-2 rounded-sm"
             onclick={() => addNewTargets(true)}
           >
             <FolderPlusIcon />
           </button>
           <button
-            className="bg-info px-2 rounded bg-opacity-50 hover:bg-opacity-100"
+            className="bg-info/50 hover:bg-info px-2 rounded-sm"
             onclick={() => addNewTargets()}
           >
             <FilePlusIcon />
@@ -129,10 +129,10 @@ function TargetsList({
               ? deselectTarget
               : selectTarget)(tgt.path)
           }}
-          className={`flex gap-2 items-center border border-white px-2 py-1 rounded border-opacity-5 hover:text-neutral-100 ${
+          className={`flex gap-2 items-center border border-white/5 px-2 py-1 rounded hover:text-neutral-100 ${
             selectedTargets.includes(tgt.path)
-              ? "bg-indigo-500 bg-opacity-25 text-neutral-100"
-              : "bg-neutral-400 bg-opacity-5 text-neutral-300"
+              ? "bg-indigo-500/25 text-neutral-100"
+              : "bg-neutral-400/5 text-neutral-300"
           }`}
           title={tgt.path}
         >
@@ -141,12 +141,12 @@ function TargetsList({
           ) : (
             <FileIcon className="w-4 h-4 min-w-4" />
           )}
-          <span className="flex-grow truncate max-w-full text-sm text-left">
+          <span className="grow truncate max-w-full text-sm text-left">
             {tgt.path}
           </span>
           <button
             onclick={(e) => (e.preventDefault(), deleteTarget(tgt.path))}
-            className="rounded p-1 text-xs bg-neutral-300 bg-opacity-10 hover:bg-red-500 hover:bg-opacity-50"
+            className="rounded-sm p-1 text-xs bg-neutral-300/10 hover:bg-red-500/50"
           >
             <TrashIcon width="1rem" height="1rem" />
           </button>

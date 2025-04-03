@@ -41,7 +41,7 @@ export function ScriptSelector() {
 
       {selectedScript.value && targets.value.length > 0 && (
         <button
-          className="px-2 py-1 font-bold text-sm text-nowrap bg-success shadow bg-opacity-50 rounded border border-white border-opacity-10 hover:bg-opacity-100"
+          className="px-2 py-1 font-bold text-sm text-nowrap bg-success/50 hover:bg-success shadow-sm rounded-sm border border-white/10"
           onclick={handleRun}
         >
           Run script on selected packages
